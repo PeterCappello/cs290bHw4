@@ -52,7 +52,7 @@ public class ClientFibonacci extends Client<Integer>
         System.setSecurityManager( new SecurityManager() );
         final ClientFibonacci client = new ClientFibonacci();
         client.begin();
-        Space space = client.getSpace( 3 );
+        Space space = client.getSpace( 4 );
         Task task = new TaskFibonacci( N );
         ReturnValue<Integer> result = ( ReturnValue<Integer> ) space.compute( task );
         client.add( client.getLabel( result.value() ) );

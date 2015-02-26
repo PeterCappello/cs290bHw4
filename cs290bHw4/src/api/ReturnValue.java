@@ -80,11 +80,14 @@ public class ReturnValue<T> extends Return
 //                    + " composeArgNum: " + composeArgNum
 //                    + " value: " + value
 //            );
-            compose.arg( composeArgNum, value );
-            if ( compose.isReady() )
+            synchronized ( space )
             {
-                space.putReadyTask( compose );
-                space.removeWaitingTask( composeId );
+                compose.arg( composeArgNum, value );
+                if ( compose.isReady() )
+                {
+                    space.putReadyTask( compose );
+                    space.removeWaitingTask( composeId );
+                }
             }
         }
     }
