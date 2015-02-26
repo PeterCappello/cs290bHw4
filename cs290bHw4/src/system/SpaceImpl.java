@@ -156,6 +156,8 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
         try { resultQ.put( result ); } catch( InterruptedException ignore ){}
     }
     
+    public void removeWaitingTask( int composeId ) { waitingTaskMap.remove( composeId ); }
+    
     private class ComputerProxy extends Thread implements Computer 
     {
         final private Computer computer;

@@ -84,6 +84,7 @@ public class ReturnValue<T> extends Return
             if ( compose.isReady() )
             {
                 space.putReadyTask( compose );
+                space.removeWaitingTask( composeId );
             }
         }
     }
