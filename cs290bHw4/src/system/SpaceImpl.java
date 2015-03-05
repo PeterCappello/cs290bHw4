@@ -59,8 +59,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
         
     public SpaceImpl() throws RemoteException 
     {
-//        Computer internalComputer = new ComputerImpl();
-        Logger.getLogger( SpaceImpl.class.getName() ).log( Level.INFO, "Space started." );
+        Logger.getLogger(SpaceImpl.class.getName() ).log( Level.INFO, "Space started." );
     }
     
     /**
@@ -82,11 +81,11 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
      * @param task
      */
     @Override
-    synchronized public void execute( Task task ) 
+    public void execute( Task task ) 
     { 
         task.id( makeTaskId() );
         task.composeId( FINAL_RETURN_VALUE );
-        readyTaskQ.add( task ); 
+        readyTaskQ.add( task );
     }
 
     /**
@@ -125,7 +124,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
      * @throws RemoteException
      */
     @Override
-    synchronized public void register( Computer computer ) throws RemoteException 
+    public void register( Computer computer ) throws RemoteException 
     {
         final ComputerProxy computerproxy = new ComputerProxy( computer );
         computerProxies.put( computer, computerproxy );
@@ -137,7 +136,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
     {
         System.setSecurityManager( new SecurityManager() );
         LocateRegistry.createRegistry( Space.PORT )
-                      .rebind( Space.SERVICE_NAME, new SpaceImpl() );
+                      .rebind(Space.SERVICE_NAME, new SpaceImpl() );
     }
 
     synchronized public void processResult( Task parentTask, Return result ) { result.process( parentTask, this ); }
