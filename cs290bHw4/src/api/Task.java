@@ -22,8 +22,8 @@
  * THE SOFTWARE.
  */
 package api;
+import java.io.Serializable;
 import system.Return;
-import java.rmi.Remote;
 import java.util.concurrent.Callable;
 import system.Computer2Space;
 
@@ -31,7 +31,7 @@ import system.Computer2Space;
  *
  * @author Peter Cappello
  */
-abstract public class Task implements Remote, Callable<Return> 
+abstract public class Task implements Serializable, Callable<Return> 
 { 
     private int id;
     private int composeId;

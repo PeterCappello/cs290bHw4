@@ -34,8 +34,18 @@ import java.rmi.server.UnicastRemoteObject;
 public class ComputerImpl extends UnicastRemoteObject implements Computer
 {
     public int numTasks = 0;
+    
+//    private final List<Worker> workerList = new LinkedList<>();
 
     public ComputerImpl() throws RemoteException {}
+    
+//    public ComputerImpl( int numWorkers ) throws RemoteException
+//    {
+//        for ( int workerNum = 0; workerNum < numWorkers; workerNum++ )
+//        {
+//            workerList.add( new Worker() );
+//        }
+//    }
             
     /**
      * Execute a Task.
@@ -77,4 +87,83 @@ public class ComputerImpl extends UnicastRemoteObject implements Computer
     { 
         System.out.println("Computer # tasks complete:" + numTasks ); /*System.exit( 0 ); */ 
     }
+    
+//    private class SpaceProxy implements Computer2Space
+//    {
+//        final private Computer2Space space;
+//        final private BlockingQueue<Task> readyTaskQ = new LinkedBlockingQueue<>();
+//        final private BlockingQueue<Return> returnQ  = new LinkedBlockingQueue<>();
+//        
+//        SpaceProxy( Computer2Space space ) { this.space = space; }
+//        
+//        /**
+//         * Used to cache tasks.
+//         * @param task the task to be cached.
+//         */
+//        @Override
+//        public void execute( Task task )
+//        {
+//            try { space.execute( task ); } 
+//            catch ( RemoteException ignore ) {} // not actually a Remote method.
+//        }
+//
+//        void putResult( Return result )
+//        { 
+//            //if ( hasCacheableTask() ) cacheTask;
+//            try { space.processResult( computer, result ); }
+//            catch (  RemoteException ex )
+//            {
+//                
+//            }
+//        }     
+//
+//        @Override
+//        public void register( Computer computer ) throws RemoteException 
+//        {
+//            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//        }
+//
+//        @Override
+//        public Return compute( Task task ) throws RemoteException { return null; } // unused.
+//
+//        @Override
+//        public Return take() throws RemoteException 
+//        {
+//            return readyTaskQ.take();
+//        }
+//
+//        @Override
+//        public void exit() throws RemoteException {
+//            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//        }
+//    }
+//    
+//    private class Worker extends Thread implements Computer
+//    {
+//        Worker()
+//        {
+//            System.out.println( "Not implemented.");
+//        }
+//        
+//        @Override
+//        public void run()
+//        {
+//            while ( true )
+//            {
+//                Task task = internalTaskQ.take();
+//            }
+//        }
+//
+//        @Override
+//        public Return execute( Task task ) throws RemoteException 
+//        {
+//            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//        }
+//
+//        @Override
+//        public void exit() throws RemoteException 
+//        {
+//            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//        }
+//    }
 }

@@ -38,7 +38,12 @@ public interface Space extends Remote
 
     Return compute( Task task ) throws RemoteException;
     
-    void put( Task task ) throws RemoteException;
+    /**
+     *
+     * @param task 
+     * @throws RemoteException
+     */
+    void execute( Task task ) throws RemoteException;
 
     Return take() throws RemoteException;
 

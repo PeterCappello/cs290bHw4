@@ -31,7 +31,7 @@ import java.rmi.RemoteException;
  *
  * @author Peter Cappello
  */
-public interface Computer2Space extends Remote
+public interface Computer2Space extends Remote //Space
 {
     void register( Computer computer ) throws RemoteException;
 }

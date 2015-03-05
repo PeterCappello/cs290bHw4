@@ -6,7 +6,9 @@
 package api;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  *
@@ -15,7 +17,9 @@ import java.util.List;
  */
 public abstract class TaskCompose<I> extends Task
 {
-    private int numUnsetArgs;
+//    static final private AtomicInteger ZERO = new AtomicInteger();
+//    private int numUnsetArgs;
+    private AtomicInteger numUnsetArgs;
     private List<I> args;
     
     @Override
@@ -23,21 +27,26 @@ public abstract class TaskCompose<I> extends Task
     
     public List<I> args() { return args; }
     
-    public void arg( int argNum, I argValue ) 
+    public void arg( final int argNum, final I argValue ) 
     { 
+        assert numUnsetArgs.get() > 0 && ! isReady() && argValue != null && args.get( argNum ) == null; 
         args.set( argNum, argValue );
-        numUnsetArgs--;
+        numUnsetArgs.getAndDecrement();
+        assert args.get( argNum ) == argValue;
     }
     
     public void numArgs( int numArgs )
     {
-        numUnsetArgs = numArgs;
-        args = new ArrayList<>( numArgs );
+        assert numArgs >= 0;
+        numUnsetArgs = new AtomicInteger( numArgs );
+        args = Collections.synchronizedList( new ArrayList<>( numArgs ) ) ;
         for ( int i = 0; i < numArgs; i++ )
         {
             args.add( null );
+            assert args.get( i ) == null;
         }
+        assert args.size() == numArgs;
     }
     
-    public boolean isReady() { return numUnsetArgs == 0; }
+    public boolean isReady() { return numUnsetArgs.get() == 0; }
 }

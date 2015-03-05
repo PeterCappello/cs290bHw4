@@ -23,7 +23,9 @@
  */
 package clients;
 
+import api.ReturnValue;
 import api.Space;
+import api.Task;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.net.MalformedURLException;
@@ -86,4 +88,14 @@ abstract public class Client<T> extends JFrame
     }
     
     abstract JLabel getLabel( T returnValue );
+    
+    static public void runClient( Client client, int numComputers, Task task ) throws RemoteException
+    {
+        System.setSecurityManager( new SecurityManager() );
+        client.begin();
+        Space space = client.getSpace( numComputers );
+        ReturnValue<Integer> result = ( ReturnValue<Integer> ) space.compute( task );
+        client.add( client.getLabel( result.value() ) );
+        client.end();
+    }
 }

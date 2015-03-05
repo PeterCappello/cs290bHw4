@@ -45,18 +45,21 @@ import java.util.logging.Logger;
  */
 public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Space
 {
+    static final public boolean SPACE_CALLABLE = false;
     static final public int FINAL_RETURN_VALUE = -1;
     static final private AtomicInteger computerIds = new AtomicInteger();
-           final private AtomicInteger taskIds     = new AtomicInteger();
     
-    private final BlockingQueue<Task>   readyTaskQ   = new LinkedBlockingQueue<>();
-    private final BlockingQueue<Return> resultQ      = new LinkedBlockingQueue<>();
+    final private AtomicInteger taskIds = new AtomicInteger();
+    final private BlockingQueue<Task>   readyTaskQ    = new LinkedBlockingQueue<>();
+    final private BlockingQueue<Return> resultQ       = new LinkedBlockingQueue<>();
+//    private final BlockingQueue<Return> internalTaskQ = new LinkedBlockingQueue<>();
 
     private final Map<Computer,ComputerProxy> computerProxies = Collections.synchronizedMap( new HashMap<>() );  // !! make concurrent
     private final Map<Integer, TaskCompose>   waitingTaskMap  = Collections.synchronizedMap( new HashMap<>() );
         
     public SpaceImpl() throws RemoteException 
     {
+//        Computer internalComputer = new ComputerImpl();
         Logger.getLogger( SpaceImpl.class.getName() ).log( Level.INFO, "Space started." );
     }
     
@@ -71,7 +74,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
     @Override
     public Return compute( Task task )
     {
-        put( task );
+        execute( task );
         return take();
     }
     /**
@@ -79,9 +82,9 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
      * @param task
      */
     @Override
-    synchronized public void put(Task task) 
+    synchronized public void execute( Task task ) 
     { 
-        task.id( taskIds.getAndIncrement() );
+        task.id( makeTaskId() );
         task.composeId( FINAL_RETURN_VALUE );
         readyTaskQ.add( task ); 
     }
@@ -91,11 +94,14 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
      * @return a Return object.
      */
     @Override
-    synchronized public Return take() 
+    public Return take() 
     {
         try 
         {
-            return resultQ.take();
+//            return resultQ.take();
+            Return result =  resultQ.take();
+            Logger.getLogger( SpaceImpl.class.getName() ).log( Level.INFO, "Returning Return object." );
+            return result;
         } 
         catch ( InterruptedException exception ) 
         {
@@ -134,7 +140,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
                       .rebind( Space.SERVICE_NAME, new SpaceImpl() );
     }
 
-    private void processResult( Task parentTask, Return result ) { result.process( parentTask, this ); }
+    synchronized public void processResult( Task parentTask, Return result ) { result.process( parentTask, this ); }
     
     public int makeTaskId() { return taskIds.incrementAndGet(); }
     
@@ -142,12 +148,14 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
             
     public void putCompose( TaskCompose compose )
     {
+        assert waitingTaskMap.get( compose.id() ) == null; 
         waitingTaskMap.put( compose.id(), compose );
         assert waitingTaskMap.get( compose.id() ) != null;
     }
     
     public void putReadyTask( Task task ) 
     { 
+        assert task.composeId() == FINAL_RETURN_VALUE || waitingTaskMap.get( task.composeId() ) != null : task.composeId();
         try { readyTaskQ.put( task ); } catch ( InterruptedException ignore ){} 
     }
     
@@ -156,14 +164,23 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
         try { resultQ.put( result ); } catch( InterruptedException ignore ){}
     }
     
-    public void removeWaitingTask( int composeId ) { waitingTaskMap.remove( composeId ); }
+    public void removeWaitingTask( int composeId )
+    { 
+        assert waitingTaskMap.get( composeId ) != null; 
+        waitingTaskMap.remove( composeId ); 
+    }
     
     private class ComputerProxy extends Thread implements Computer 
     {
         final private Computer computer;
         final private int computerId = computerIds.getAndIncrement();
+//              private BlockingQueue<Task> readyTaskQ = new LinkedBlockingQueue<>();
 
-        ComputerProxy( Computer computer ) { this.computer = computer; }
+        ComputerProxy( Computer computer )
+        { 
+            this.computer = computer;
+            this.setName( "Computer " + computerId );
+        }
 
         @Override
         public Return execute( Task task ) throws RemoteException

@@ -39,17 +39,12 @@ public class ReturnValue<T> extends Return
     final private int composeArgNum;
     final private T value;
     
-    public ReturnValue( Task task, T value ) 
+    public ReturnValue( final Task task, final T value ) 
     { 
+        assert value != null;
         composeId = task.composeId();
         composeArgNum = task.composeArgNum();
         this.value = value; 
-//        System.out.println("ReturnValue.constructor: " 
-//            + " taskId: " + task.id()
-//            + " composeId: " + composeId
-//            + " composeArgNum: " + composeArgNum
-//            + " value: " + value
-//        );
     }
     
     public T value() { return value; }
@@ -65,27 +60,27 @@ public class ReturnValue<T> extends Return
         if ( composeId == SpaceImpl.FINAL_RETURN_VALUE )
         {
             space.putResult( this );
+            Logger.getLogger( ReturnValue.class.getName() ).log(Level.INFO, "FINAL_RETURN_VALUE for {0} composeId ", composeId);
             return;
         }
         TaskCompose compose = space.getCompose( composeId );
-        if ( compose == null )
+        assert compose != null && ! compose.isReady();
+        compose.arg( composeArgNum, value );
+        if ( compose.isReady() )
         {
-            Logger.getLogger( this.getClass().getCanonicalName() ).log(Level.SEVERE, "Waiting compose task missing." );
-            System.exit( 1 );
+            space.removeWaitingTask( composeId );
+            if ( SpaceImpl.SPACE_CALLABLE )
+            {
+                space.processResult( compose, compose.call() ); // assumes TaskCompose is SPACE_CALLABLE.
+            }
+            else
+            {
+                space.putReadyTask( compose );
+            }
         }
         else
         {
-//            System.out.println("ReturnValue.process: updating compose: "
-//                    + " composeId: " + composeId
-//                    + " composeArgNum: " + composeArgNum
-//                    + " value: " + value
-//            );
-            compose.arg( composeArgNum, value );
-            if ( compose.isReady() )
-            {
-                space.putReadyTask( compose );
-                space.removeWaitingTask( composeId );
-            }
+            assert ! compose.isReady() : " composeId: " + composeId + " compose.id() " + compose.id() + " compose.isReady(): " + compose.isReady();
         }
     }
 }

@@ -23,6 +23,7 @@
  */
 package api;
 
+import java.util.ArrayList;
 import java.util.List;
 import system.Return;
 import system.SpaceImpl;
@@ -56,20 +57,19 @@ public class ReturnSubtasks extends Return
         compose.composeArgNum( parentTask.composeArgNum() );
         compose.numArgs( tasks.size() );
         space.putCompose( compose );
-//        System.out.println("ReturnSubtasks.process compose: compose.id(): " + compose.id()
-//                + " compose.composeId(): " + compose.composeId());
+//        List<Task> taskList = new ArrayList<>();
         for ( int i = 0; i < tasks.size(); i++  )
         {
             Task task = tasks.get( i );
             task.id( space.makeTaskId() );
             task.composeId( composeId );
             task.composeArgNum( i );
+//            taskList.add( task );
             space.putReadyTask( task ); 
-//            System.out.println(" task: task.id(): " + task.id()
-//                    + " task.composeId(): " + task.composeId()
-//                    + " task.composeArgNum( " + i + " ): " + task.composeArgNum()
-//                    + " task: " + task
-//             );
         }
+//        for ( int i = 0; i < taskList.size(); i++ )
+//        {
+//            assert taskList.get( i ).composeArgNum() == i : " taskList.get( i ).composeArgNum(): " + taskList.get( i ).composeArgNum() + " i: " + i;
+//        }
     }
 }
