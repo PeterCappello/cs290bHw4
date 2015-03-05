@@ -59,7 +59,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
         
     public SpaceImpl() throws RemoteException 
     {
-        Logger.getLogger(SpaceImpl.class.getName() ).log( Level.INFO, "Space started." );
+        Logger.getLogger(getClass().getName() ).log( Level.INFO, "Space started." );
     }
     
     /**
