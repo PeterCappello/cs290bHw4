@@ -23,8 +23,6 @@
  */
 package clients;
 
-import api.ReturnValue;
-import api.Space;
 import api.Task;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -46,8 +44,9 @@ import java.util.logging.Logger;
  */
 public class ClientEuclideanTsp extends Client<Tour>
 {
-    private static final int NUM_PIXALS = 600;
-    public static final double[][] CITIES =
+    // configure application
+    static private final int NUM_PIXALS = 600;
+    static public  final double[][] CITIES =
     {
 	{ 1, 1 },
 	{ 8, 1 },
@@ -62,6 +61,18 @@ public class ClientEuclideanTsp extends Client<Tour>
 	{ 6, 6 },
 	{ 3, 6 }
     };
+    static private Client client() throws RemoteException { return new ClientEuclideanTsp(); }
+    static private final int NUM_COMPUTERS = 4;
+    static private List<Integer> unvisitedCities()
+    {
+        final List<Integer> unvisitedCities = new ArrayList<>();
+        for ( int city = 0; city < CITIES.length; city++ )
+        {
+            unvisitedCities.add( city );
+        }
+        return unvisitedCities;
+    }
+    static private final Task TASK = new TaskEuclideanTsp( new ArrayList<>(), unvisitedCities() );
     
     public ClientEuclideanTsp() throws RemoteException
     { 
@@ -70,19 +81,7 @@ public class ClientEuclideanTsp extends Client<Tour>
     
     public static void main( String[] args ) throws Exception
     {
-        final List<Integer> unvisitedCities = new ArrayList<>();
-        for ( int city = 0; city < CITIES.length; city++ )
-        {
-            unvisitedCities.add( city );
-        }
-        final Task task = new TaskEuclideanTsp( new ArrayList<>(), unvisitedCities );
-        final ClientEuclideanTsp client = new ClientEuclideanTsp();
-        
-        System.setSecurityManager( new SecurityManager() );
-        client.begin();
-        ReturnValue<Tour> result = ( ReturnValue<Tour> ) client.getSpace( 4 ).compute( task );
-        client.add( client.getLabel( result.value() ) );
-        client.end();
+        Client.runClient( client(), NUM_COMPUTERS, TASK );
     }
     
     @Override

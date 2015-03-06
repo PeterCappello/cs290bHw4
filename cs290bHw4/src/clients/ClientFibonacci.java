@@ -36,10 +36,10 @@ import javax.swing.SwingConstants;
 public class ClientFibonacci extends Client<Integer>
 {
     // configure application
-    private static final int N = 16; // F(16) = 987
-    private static final int NUM_COMPUTERS = 4;
-    private static final Task TASK = new TaskFibonacci( N );
-    private static Client client() throws RemoteException { return new ClientFibonacci(); }
+    static private final int N = 16; // F(16) = 987
+    static private  final int NUM_COMPUTERS = 4;
+    static private  final Task TASK = new TaskFibonacci( N );
+    static private  Client client() throws RemoteException { return new ClientFibonacci(); }
     
     public ClientFibonacci() throws RemoteException { super( "Fibonacci Number" ); }
 

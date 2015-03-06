@@ -24,6 +24,7 @@
 package clients;
 import api.ReturnValue;
 import api.Task;
+import applications.euclideantsp.TaskEuclideanTsp;
 import applications.euclideantsp.Tour;
 import applications.mandelbrotset.IterationCounts;
 import applications.mandelbrotset.TaskMandelbrotSet;
@@ -32,6 +33,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
@@ -47,7 +49,11 @@ public class ClientMandelbrotSet extends Client<IterationCounts>
     public static final int N_PIXELS = 1024;
     public static final int ITERATION_LIMIT = 512;
     public static final int BLOCK_SIZE = 256;
-    
+    static private Client client() throws RemoteException { return new ClientMandelbrotSet(); }
+    static private final int NUM_COMPUTERS = 4;
+    private static final Task TASK = 
+            new TaskMandelbrotSet( LOWER_LEFT_X, LOWER_LEFT_Y, EDGE_LENGTH, N_PIXELS, ITERATION_LIMIT, 0, 0 );
+
     public ClientMandelbrotSet() throws RemoteException 
     { 
         super( "Mandelbrot Set Visualizer" );
@@ -60,14 +66,7 @@ public class ClientMandelbrotSet extends Client<IterationCounts>
      */
     public static void main( String[] args ) throws Exception
     {  
-        final Task task = new TaskMandelbrotSet( LOWER_LEFT_X, LOWER_LEFT_Y, EDGE_LENGTH, N_PIXELS, ITERATION_LIMIT, 0, 0 );
-        final Client client = new ClientMandelbrotSet();
-        
-        System.setSecurityManager( new SecurityManager() );
-        client.begin();
-        ReturnValue<Tour> result = ( ReturnValue<Tour> ) client.getSpace( 4 ).compute( task );
-        client.add( client.getLabel( result.value() ) );
-        client.end();
+        Client.runClient( client(), NUM_COMPUTERS, TASK );
     }
     
     @Override
