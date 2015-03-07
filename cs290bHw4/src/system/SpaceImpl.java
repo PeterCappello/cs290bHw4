@@ -45,14 +45,13 @@ import java.util.logging.Logger;
  */
 public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Space
 {
-    static final public boolean SPACE_CALLABLE = false;
+    static final public boolean SPACE_CALLABLE = true;
     static final public int FINAL_RETURN_VALUE = -1;
     static final private AtomicInteger computerIds = new AtomicInteger();
     
     final private AtomicInteger taskIds = new AtomicInteger();
     final private BlockingQueue<Task>   readyTaskQ    = new LinkedBlockingQueue<>();
     final private BlockingQueue<Return> resultQ       = new LinkedBlockingQueue<>();
-//    private final BlockingQueue<Return> internalTaskQ = new LinkedBlockingQueue<>();
 
     private final Map<Computer,ComputerProxy> computerProxies = Collections.synchronizedMap( new HashMap<>() );  // !! make concurrent
     private final Map<Integer, TaskCompose>   waitingTaskMap  = Collections.synchronizedMap( new HashMap<>() );
@@ -95,13 +94,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
     @Override
     public Return take() 
     {
-        try 
-        {
-//            return resultQ.take();
-            Return result =  resultQ.take();
-            Logger.getLogger( SpaceImpl.class.getName() ).log( Level.INFO, "Returning Return object." );
-            return result;
-        } 
+        try { return resultQ.take(); } 
         catch ( InterruptedException exception ) 
         {
             Logger.getLogger(SpaceImpl.class.getName()).log(Level.INFO, null, exception);
@@ -154,7 +147,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
     
     public void putReadyTask( Task task ) 
     { 
-        assert task.composeId() == FINAL_RETURN_VALUE || waitingTaskMap.get( task.composeId() ) != null : task.composeId();
+        assert waitingTaskMap.get( task.composeId() ) != null || task.composeId() == FINAL_RETURN_VALUE : task.composeId();
         try { readyTaskQ.put( task ); } catch ( InterruptedException ignore ){} 
     }
     
@@ -173,7 +166,6 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
     {
         final private Computer computer;
         final private int computerId = computerIds.getAndIncrement();
-//              private BlockingQueue<Task> readyTaskQ = new LinkedBlockingQueue<>();
 
         ComputerProxy( Computer computer )
         { 

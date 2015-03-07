@@ -78,9 +78,5 @@ public class ReturnValue<T> extends Return
                 space.putReadyTask( compose );
             }
         }
-        else
-        {
-            assert ! compose.isReady() : " composeId: " + composeId + " compose.id() " + compose.id() + " compose.isReady(): " + compose.isReady();
-        }
     }
 }
