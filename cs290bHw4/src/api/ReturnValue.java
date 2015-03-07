@@ -60,7 +60,6 @@ public class ReturnValue<T> extends Return
         if ( composeId == SpaceImpl.FINAL_RETURN_VALUE )
         {
             space.putResult( this );
-            Logger.getLogger( ReturnValue.class.getName() ).log(Level.INFO, "FINAL_RETURN_VALUE for {0} composeId ", composeId);
             return;
         }
         TaskCompose compose = space.getCompose( composeId );
@@ -68,7 +67,6 @@ public class ReturnValue<T> extends Return
         compose.arg( composeArgNum, value );
         if ( compose.isReady() )
         {
-            space.removeWaitingTask( composeId );
             if ( SpaceImpl.SPACE_CALLABLE )
             {
                 space.processResult( compose, compose.call() ); // assumes TaskCompose is SPACE_CALLABLE.
@@ -77,6 +75,7 @@ public class ReturnValue<T> extends Return
             {
                 space.putReadyTask( compose );
             }
+            space.removeWaitingTask( composeId );
         }
     }
 }
