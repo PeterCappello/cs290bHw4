@@ -22,10 +22,7 @@
  * THE SOFTWARE.
  */
 package clients;
-import api.ReturnValue;
 import api.Task;
-import applications.euclideantsp.TaskEuclideanTsp;
-import applications.euclideantsp.Tour;
 import applications.mandelbrotset.IterationCounts;
 import applications.mandelbrotset.TaskMandelbrotSet;
 import java.awt.Color;
@@ -33,7 +30,6 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
@@ -43,6 +39,7 @@ import javax.swing.JLabel;
  */
 public class ClientMandelbrotSet extends Client<IterationCounts>
 {
+    // configure application
     public static final double LOWER_LEFT_X = -0.7510975859375;
     public static final double LOWER_LEFT_Y = 0.1315680625;
     public static final double EDGE_LENGTH = 0.01611;
