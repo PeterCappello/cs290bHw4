@@ -32,10 +32,7 @@ import java.rmi.RemoteException;
  * @author Peter Cappello
  */
 public interface Worker extends Remote
-{
-    public static int PORT = 8001;
-    public static String SERVICE_NAME = "Worker";
-    
+{   
     /**
      * Execute Task.
      * @param task 
