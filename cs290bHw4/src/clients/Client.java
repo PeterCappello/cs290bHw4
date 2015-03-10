@@ -74,7 +74,7 @@ abstract public class Client<T> extends JFrame
     public Space getSpace( String domainName ) throws RemoteException, NotBoundException, MalformedURLException
     {
         final String url = "rmi://" + domainName + ":" + Space.PORT + "/" + Space.SERVICE_NAME;
-        return (Space) Naming.lookup( url );
+        return ( Space ) Naming.lookup( url );
     }
     
     public Space getSpace( int numComputers ) throws RemoteException
@@ -82,7 +82,8 @@ abstract public class Client<T> extends JFrame
         SpaceImpl space = new SpaceImpl();
         for ( int i = 0; i < numComputers; i++ )
         {
-            space.register( new ComputerImpl() );
+            ComputerImpl computer = new ComputerImpl();
+            space.register( computer, computer.workerList() );
         }
         return space;
     }

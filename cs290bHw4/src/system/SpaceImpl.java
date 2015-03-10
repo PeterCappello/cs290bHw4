@@ -32,6 +32,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.BlockingQueue;
@@ -50,8 +51,8 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
     static final private AtomicInteger computerIds = new AtomicInteger();
     
     final private AtomicInteger taskIds = new AtomicInteger();
-    final private BlockingQueue<Task>   readyTaskQ    = new LinkedBlockingQueue<>();
-    final private BlockingQueue<Return> resultQ       = new LinkedBlockingQueue<>();
+    final private BlockingQueue<Task>   readyTaskQ = new LinkedBlockingQueue<>();
+    final private BlockingQueue<Return> resultQ    = new LinkedBlockingQueue<>();
 
     private final Map<Computer,ComputerProxy> computerProxies = Collections.synchronizedMap( new HashMap<>() );  // !! make concurrent
     private final Map<Integer, TaskCompose>   waitingTaskMap  = Collections.synchronizedMap( new HashMap<>() );
@@ -113,15 +114,15 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
     /**
      * Register Computer with Space.  
      * Will override existing key-value pair, if any.
-     * @param computer - Remote reference to computer.
+     * @param computer
+     * @param workerList
      * @throws RemoteException
      */
     @Override
-    public void register( Computer computer ) throws RemoteException 
+    public void register( Computer computer, List<Worker> workerList ) throws RemoteException
     {
-        final ComputerProxy computerproxy = new ComputerProxy( computer );
+        final ComputerProxy computerproxy = new ComputerProxy( computer, workerList );
         computerProxies.put( computer, computerproxy );
-        computerproxy.start();
         Logger.getLogger(SpaceImpl.class.getName()).log(Level.INFO, "Computer {0} started.", computerproxy.computerId);
     }
     
@@ -162,15 +163,21 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
         waitingTaskMap.remove( composeId ); 
     }
     
-    private class ComputerProxy extends Thread implements Computer 
+    private class ComputerProxy /* extends Thread */ implements Computer 
     {
         final private Computer computer;
         final private int computerId = computerIds.getAndIncrement();
+        final private Map<Worker, WorkerProxy> workerMap = new HashMap<>();
 
-        ComputerProxy( Computer computer )
+        ComputerProxy( Computer computer, List<Worker> workerList )
         { 
             this.computer = computer;
-            this.setName( "Computer " + computerId );
+            for ( Worker worker : workerList )
+            {
+                WorkerProxy workerProxy = new WorkerProxy( worker );
+                workerMap.put( worker, workerProxy );
+                workerProxy.start();
+            }
         }
 
         @Override
@@ -186,25 +193,43 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
             catch ( RemoteException ignore ) {} 
         }
 
-        @Override
-        public void run() 
+        private class WorkerProxy extends Thread implements Worker
         {
-            while ( true ) 
+            final private Worker worker;
+            
+            private WorkerProxy( Worker worker ) { this.worker = worker; }
+            
+            @Override
+            public void run()
             {
-                Task task = null;
-                try 
-                { 
-                    task = readyTaskQ.take();
-                    processResult( task, execute( task ) );
-                }
-                catch ( RemoteException ignore )
+                while ( true )
                 {
-                    readyTaskQ.add( task );
-                    computerProxies.remove( computer );
-                    Logger.getLogger( this.getClass().getName() ).log( Level.WARNING, "Computer {0} failed.", computerId );
-                } 
-                catch ( InterruptedException ex ) { Logger.getLogger( this.getClass().getName()).log( Level.INFO, null, ex ); }
+                    Task task = null;
+                    try 
+                    { 
+                        task = readyTaskQ.take();
+                        processResult( task, execute( task ) );
+                    }
+                    catch ( RemoteException ignore )
+                    {
+                        readyTaskQ.add( task );
+                        workerMap.remove( worker );
+                        Logger.getLogger( this.getClass().getName() ).log( Level.WARNING, "Computer {0} failed.", computerId );
+                        if ( workerMap.isEmpty() )
+                        {
+                            computerProxies.remove( computer );
+                            Logger.getLogger( ComputerProxy.class.getCanonicalName() ).log( Level.WARNING, "Computer {0} failed.", computerId );
+                        }
+                    } 
+                    catch ( InterruptedException ex ) { Logger.getLogger( this.getClass().getName()).log( Level.INFO, null, ex ); }
+                }
             }
+            
+            @Override
+            public Return execute( Task task ) throws RemoteException 
+            {
+                return worker.execute( task );
+            }     
         }
     }
 }

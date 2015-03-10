@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2015 peter.
+ * Copyright 2015 Peter Cappello.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,16 +23,24 @@
  */
 package system;
 
-import api.Computer;
+import api.Task;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.List;
 
 /**
  *
  * @author Peter Cappello
  */
-public interface Computer2Space extends Remote //Space
+public interface Worker extends Remote
 {
-    void register( Computer computer, List<Worker> workerList ) throws RemoteException;
+    public static int PORT = 8001;
+    public static String SERVICE_NAME = "Worker";
+    
+    /**
+     * Execute Task.
+     * @param task 
+     * @return Task Return object
+     * @throws RemoteException
+     */
+    Return execute( Task task ) throws RemoteException;
 }
