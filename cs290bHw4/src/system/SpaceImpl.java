@@ -41,21 +41,19 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * SpaceImpl implements the space for coordinating sending/receiving Task and Result objects.
  * @author Peter Cappello
  */
 public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Space
 {
-//    static final public boolean SPACE_CALLABLE = true;
     static final public int FINAL_RETURN_VALUE = -1;
     static final private AtomicInteger computerIds = new AtomicInteger();
     
     final private AtomicInteger taskIds = new AtomicInteger();
     final private BlockingQueue<Task>   readyTaskQ = new LinkedBlockingQueue<>();
     final private BlockingQueue<Return> resultQ    = new LinkedBlockingQueue<>();
-
-    private final Map<Computer,ComputerProxy> computerProxies = Collections.synchronizedMap( new HashMap<>() );  // !! make concurrent
-    private final Map<Integer, TaskCompose>   waitingTaskMap  = Collections.synchronizedMap( new HashMap<>() );
+    final private Map<Computer,ComputerProxy> computerProxies = Collections.synchronizedMap( new HashMap<>() );  // !! make concurrent
+    final private Map<Integer, TaskCompose>   waitingTaskMap  = Collections.synchronizedMap( new HashMap<>() );
         
     public SpaceImpl() throws RemoteException 
     {
