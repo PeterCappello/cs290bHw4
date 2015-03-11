@@ -46,7 +46,7 @@ import java.util.logging.Logger;
  */
 public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Space
 {
-    static final public boolean SPACE_CALLABLE = true;
+//    static final public boolean SPACE_CALLABLE = true;
     static final public int FINAL_RETURN_VALUE = -1;
     static final private AtomicInteger computerIds = new AtomicInteger();
     

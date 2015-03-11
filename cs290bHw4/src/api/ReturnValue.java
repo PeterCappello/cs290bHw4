@@ -23,9 +23,8 @@
  */
 package api;
 
+import system.Configuration;
 import system.Return;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import system.SpaceImpl;
 
 /**
@@ -67,7 +66,7 @@ public class ReturnValue<T> extends Return
         compose.arg( composeArgNum, value );
         if ( compose.isReady() )
         {
-            if ( SpaceImpl.SPACE_CALLABLE )
+            if ( Configuration.SPACE_CALLABLE )
             {
                 space.processResult( compose, compose.call() ); // assumes TaskCompose is SPACE_CALLABLE.
             }

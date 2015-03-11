@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static system.Configuration.MULTI_COMPUTERS;
 
 /**
  * An implementation of the Remote Computer interface.
@@ -44,7 +45,7 @@ public class ComputerImpl extends UnicastRemoteObject implements Computer
 
     public ComputerImpl() throws RemoteException
     {
-        final int numWorkers = FACTOR * Runtime.getRuntime().availableProcessors();
+        final int numWorkers = MULTI_COMPUTERS ? FACTOR * Runtime.getRuntime().availableProcessors() : 1;
         for ( int workerNum = 0; workerNum < numWorkers; workerNum++ )
         {
             workerList.add( new WorkerImpl() );
