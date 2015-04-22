@@ -190,6 +190,18 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
             try { computer.exit(); } 
             catch ( RemoteException ignore ) {} 
         }
+        
+        private void unregister( Task task, Computer computer, Worker worker )
+    {
+        readyTaskQ.add( task );
+        workerMap.remove( worker );
+        Logger.getLogger( this.getClass().getName() ).log( Level.WARNING, "Computer {0} failed.", computerId );
+        if ( workerMap.isEmpty() )
+        {
+            computerProxies.remove( computer );
+            Logger.getLogger( ComputerProxy.class.getCanonicalName() ).log( Level.WARNING, "Computer {0} failed.", computerId );
+        }
+    }
 
         private class WorkerProxy extends Thread implements Worker
         {
@@ -210,16 +222,14 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
                     }
                     catch ( RemoteException ignore )
                     {
-                        readyTaskQ.add( task );
-                        workerMap.remove( worker );
-                        Logger.getLogger( this.getClass().getName() ).log( Level.WARNING, "Computer {0} failed.", computerId );
-                        if ( workerMap.isEmpty() )
-                        {
-                            computerProxies.remove( computer );
-                            Logger.getLogger( ComputerProxy.class.getCanonicalName() ).log( Level.WARNING, "Computer {0} failed.", computerId );
-                        }
+                        unregister( task, computer, worker );
+                        break;
                     } 
-                    catch ( InterruptedException ex ) { Logger.getLogger( this.getClass().getName()).log( Level.INFO, null, ex ); }
+                    catch ( InterruptedException ex ) 
+                    { 
+                        Logger.getLogger( this.getClass().getName() )
+                              .log( Level.INFO, null, ex ); 
+                    }
                 }
             }
             
