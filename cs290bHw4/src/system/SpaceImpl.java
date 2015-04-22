@@ -192,16 +192,16 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
         }
         
         private void unregister( Task task, Computer computer, Worker worker )
-    {
-        readyTaskQ.add( task );
-        workerMap.remove( worker );
-        Logger.getLogger( this.getClass().getName() ).log( Level.WARNING, "Computer {0} failed.", computerId );
-        if ( workerMap.isEmpty() )
         {
-            computerProxies.remove( computer );
-            Logger.getLogger( ComputerProxy.class.getCanonicalName() ).log( Level.WARNING, "Computer {0} failed.", computerId );
+            readyTaskQ.add( task );
+            workerMap.remove( worker );
+            Logger.getLogger( this.getClass().getName() ).log( Level.WARNING, "Computer {0} failed.", computerId );
+            if ( workerMap.isEmpty() )
+            {
+                computerProxies.remove( computer );
+                Logger.getLogger( ComputerProxy.class.getCanonicalName() ).log( Level.WARNING, "Computer {0} failed.", computerId );
+            }
         }
-    }
 
         private class WorkerProxy extends Thread implements Worker
         {
