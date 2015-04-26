@@ -56,19 +56,13 @@ public class ReturnSubtasks extends Return
         compose.composeArgNum( parentTask.composeArgNum() );
         compose.numArgs( tasks.size() );
         space.putCompose( compose );
-//        List<Task> taskList = new ArrayList<>();
         for ( int i = 0; i < tasks.size(); i++  )
         {
             Task task = tasks.get( i );
             task.id( space.makeTaskId() );
             task.composeId( composeId );
             task.composeArgNum( i );
-//            taskList.add( task );
             space.putReadyTask( task ); 
         }
-//        for ( int i = 0; i < taskList.size(); i++ )
-//        {
-//            assert taskList.get( i ).composeArgNum() == i : " taskList.get( i ).composeArgNum(): " + taskList.get( i ).composeArgNum() + " i: " + i;
-//        }
     }
 }

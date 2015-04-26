@@ -58,7 +58,7 @@ public class ClientEuclideanTsp extends Client<Tour>
 	{ 2, 7 },
 	{ 3, 3 },
 	{ 6, 3 },
-	{ 6, 6 },
+//	{ 6, 6 },
 	{ 3, 6 }
     };
     static private Client client() throws RemoteException { return new ClientEuclideanTsp(); }
