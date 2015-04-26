@@ -22,8 +22,6 @@
  * THE SOFTWARE.
  */
 package api;
-
-import system.Configuration;
 import system.Return;
 import system.SpaceImpl;
 
@@ -62,19 +60,7 @@ public class ReturnValue<T> extends Return
             return;
         }
         TaskCompose compose = space.getCompose( composeId );
-        assert compose != null && ! compose.isReady();
-        compose.arg( composeArgNum, value );
-        if ( compose.isReady() )
-        {
-            if ( Configuration.SPACE_CALLABLE )
-            {
-                space.processResult( compose, compose.call() ); // assumes TaskCompose is SPACE_CALLABLE.
-            }
-            else
-            {
-                space.putReadyTask( compose );
-            }
-            space.removeWaitingTask( composeId );
-        }
+        assert compose != null;
+        compose.arg( composeArgNum, value, space );
     }
 }

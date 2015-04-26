@@ -121,6 +121,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
     {
         final ComputerProxy computerproxy = new ComputerProxy( computer, workerList );
         computerProxies.put( computer, computerproxy );
+        computerproxy.startWorkerProxies();
         Logger.getLogger(SpaceImpl.class.getName()).log(Level.INFO, "Computer {0} started.", computerproxy.computerId);
     }
     
@@ -131,7 +132,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
                       .rebind(Space.SERVICE_NAME, new SpaceImpl() );
     }
 
-    synchronized public void processResult( Task parentTask, Return result ) { result.process( parentTask, this ); }
+    public void processResult( Task parentTask, Return result ) { result.process( parentTask, this ); }
     
     public int makeTaskId() { return taskIds.incrementAndGet(); }
     
@@ -161,7 +162,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
         waitingTaskMap.remove( composeId ); 
     }
     
-    private class ComputerProxy /* extends Thread */ implements Computer 
+    private class ComputerProxy implements Computer 
     {
         final private Computer computer;
         final private int computerId = computerIds.getAndIncrement();
@@ -174,6 +175,13 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
             {
                 WorkerProxy workerProxy = new WorkerProxy( worker );
                 workerMap.put( worker, workerProxy );
+            }
+        }
+        
+        private void startWorkerProxies()
+        {
+            for ( WorkerProxy workerProxy : workerMap.values() )
+            {
                 workerProxy.start();
             }
         }
