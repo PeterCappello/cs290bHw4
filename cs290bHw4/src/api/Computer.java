@@ -23,6 +23,7 @@
  */
 package api;
 
+import java.rmi.Remote;
 import system.Return;
 import java.rmi.RemoteException;
 
@@ -30,7 +31,7 @@ import java.rmi.RemoteException;
  *
  * @author Peter Cappello
  */
-public interface Computer
+public interface Computer extends Remote
 {        
     public Return execute( Task task ) throws RemoteException;
     
