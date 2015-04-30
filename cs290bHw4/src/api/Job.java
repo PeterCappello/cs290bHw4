@@ -1,4 +1,4 @@
-/*
+/**
  * The MIT License
  *
  * Copyright 2015 peter.
@@ -21,36 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package clients;
+package api;
 
-import api.Task;
-import applications.fibonacci.TaskFibonacci;
-import java.rmi.RemoteException;
 import javax.swing.JLabel;
-import javax.swing.SwingConstants;
 
 /**
- *
+ * 
  * @author Peter Cappello
+ * @param <T>
  */
-public class ClientFibonacci extends Client<Integer>
+public interface Job<T> 
 {
-    // configure application
-    static private final int N = 16; // F(16) = 987
-    static private  final int NUM_COMPUTERS = 2;
-    static private  final Task TASK = new TaskFibonacci( N );
-    static private  Client client() throws RemoteException { return new ClientFibonacci(); }
-    
-    public ClientFibonacci() throws RemoteException { super( "Fibonacci Number" ); }
-
-    public static void main( String[] args ) throws Exception
-    {  
-        Client.runClient( client(), NUM_COMPUTERS, TASK );
-    }
-    
-    @Override
-    JLabel getLabel( Integer returnValue )
-    { 
-        return new JLabel( " " + TASK.toString() + "= " + returnValue + " ", SwingConstants.CENTER ) ; 
-    }
+    /**
+     * Display the solution as a JLabel.
+     * @param returnValue the solution.
+     * @return some representation of the solution.
+     */
+    abstract JLabel view( final T returnValue );
 }

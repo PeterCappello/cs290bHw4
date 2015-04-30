@@ -15,31 +15,38 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR ONE PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package api;
-
-import system.Task;
+package system;
+import java.io.Serializable;
 import system.Return;
+import java.util.concurrent.Callable;
+import system.Computer2Space;
 
 /**
  *
  * @author Peter Cappello
- * @param <T> the type of data in the expression to be reduced.
  */
-abstract public class Reduce<T> extends Task
-{
-    private T value;
+abstract public class Task implements Serializable, Callable<Return> 
+{ 
+    private int id;
+    private int composeId;
+    private int composeArgNum;
+    protected Computer2Space space;
     
     @Override
-    abstract public Return call();
-    
-    void setArg( T arg )
-    {
+    abstract public Return call(); 
         
-    }
+    public int  id() { return id; }
+    public void id( int id ) { this.id = id; }
+    
+    public int  composeArgNum() { return composeArgNum; }
+    public void composeArgNum( int composeArgNum ) { this.composeArgNum = composeArgNum; }
+    
+    public int  composeId() { return composeId; }
+    public void composeId( int composeId ) { this.composeId = composeId; }
 }

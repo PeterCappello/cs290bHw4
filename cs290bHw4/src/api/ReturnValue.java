@@ -22,11 +22,13 @@
  * THE SOFTWARE.
  */
 package api;
+import system.Task;
 import system.Return;
 import system.SpaceImpl;
 
 /**
- *
+ * The return value of some task execute method that does NOT decompose into 
+ * subtasks.
  * @author Peter Cappello
  * @param <T>
  */
@@ -47,20 +49,20 @@ public class ReturnValue<T> extends Return
     public T value() { return value; }
    
     /**
-     *
+     * Update the taskCompose task that is waiting for this input.
      * @param parentTask unused - the task whose Result is to be processed.
-     * @param space
+     * @param space containing the taskCompose task that is waiting for this value.
      */
     @Override
-    public void process( Task parentTask, SpaceImpl space )
+    public void process( final Task parentTask, final SpaceImpl space )
     {
         if ( composeId == SpaceImpl.FINAL_RETURN_VALUE )
         {
             space.putResult( this );
             return;
         }
-        TaskCompose compose = space.getCompose( composeId );
-        assert compose != null;
-        compose.arg( composeArgNum, value, space );
+        TaskCompose taskCompose = space.getCompose( composeId );
+        assert taskCompose != null;
+        taskCompose.arg( composeArgNum, value, space );
     }
 }

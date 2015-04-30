@@ -23,16 +23,17 @@
  */
 package api;
 
+import system.Task;
 import java.util.List;
 import system.Return;
 import system.SpaceImpl;
 
-public class ReturnSubtasks extends Return
+public class ReturnDecomposition extends Return
 {    
     final private TaskCompose compose;
     final private List<Task> tasks;
     
-    public ReturnSubtasks( TaskCompose compose, List<Task> tasks )
+    public ReturnDecomposition( final TaskCompose compose, final List<Task> tasks )
     {
         this.compose = compose;
         this.tasks = tasks;
@@ -48,7 +49,7 @@ public class ReturnSubtasks extends Return
      * @param space the Space that holds the Task and Results.
      */
     @Override
-    public void process( Task parentTask, SpaceImpl space ) 
+    public void process( final Task parentTask, final SpaceImpl space ) 
     {
         final int composeId = space.makeTaskId();
         compose.id( composeId );

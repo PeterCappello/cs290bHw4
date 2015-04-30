@@ -23,9 +23,8 @@
  */
 package system;
 
-import api.Computer;
+import api.ReturnValue;
 import api.Space;
-import api.Task;
 import api.TaskCompose;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -51,7 +50,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
     
     final private AtomicInteger taskIds = new AtomicInteger();
     final private BlockingQueue<Task>   readyTaskQ = new LinkedBlockingQueue<>();
-    final private BlockingQueue<Return> resultQ    = new LinkedBlockingQueue<>();
+    final private BlockingQueue<ReturnValue> resultQ    = new LinkedBlockingQueue<>();
     final private Map<Computer,ComputerProxy> computerProxies = Collections.synchronizedMap( new HashMap<>() );  // !! make concurrent
     final private Map<Integer, TaskCompose>   waitingTaskMap  = Collections.synchronizedMap( new HashMap<>() );
         
@@ -69,7 +68,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
      * @return the Task's Return object.
      */
     @Override
-    public Return compute( Task task )
+    public ReturnValue compute( Task task )
     {
         execute( task );
         return take();
@@ -85,13 +84,22 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
         task.composeId( FINAL_RETURN_VALUE );
         readyTaskQ.add( task );
     }
+    
+    @Override
+    synchronized public void putAll( final List<Task> taskList )
+    {
+        for ( Task task : taskList )
+        {
+            readyTaskQ.add( task );
+        }
+    }
 
     /**
      * Take a Return from the Return queue.
      * @return a Return object.
      */
     @Override
-    public Return take() 
+    public ReturnValue take() 
     {
         try { return resultQ.take(); } 
         catch ( InterruptedException exception ) 
@@ -138,20 +146,20 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
     
     public TaskCompose getCompose( int composeId ) { return waitingTaskMap.get( composeId ); }
             
-    public void putCompose( TaskCompose compose )
+    public void putCompose( final TaskCompose compose )
     {
         assert waitingTaskMap.get( compose.id() ) == null; 
         waitingTaskMap.put( compose.id(), compose );
         assert waitingTaskMap.get( compose.id() ) != null;
     }
     
-    public void putReadyTask( Task task ) 
+    public void putReadyTask( final Task task ) 
     { 
         assert waitingTaskMap.get( task.composeId() ) != null || task.composeId() == FINAL_RETURN_VALUE : task.composeId();
         try { readyTaskQ.put( task ); } catch ( InterruptedException ignore ){} 
     }
     
-    public void putResult( Return result )
+    public void putResult( final ReturnValue result )
     {
         try { resultQ.put( result ); } catch( InterruptedException ignore ){}
     }

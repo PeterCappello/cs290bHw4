@@ -39,18 +39,31 @@ import static system.Configuration.MULTI_COMPUTERS;
 public class ComputerImpl extends UnicastRemoteObject implements Computer
 {
     static final private int FACTOR = 2;
-           final private List<Worker> workerList = new ArrayList<>();
+           final private List<Worker> workerList = makeWorkerList();
                  private int numTasks = 0;
            
 
     public ComputerImpl() throws RemoteException
     {
-        final int numWorkers = MULTI_COMPUTERS ? FACTOR * Runtime.getRuntime().availableProcessors() : 1;
-        for ( int workerNum = 0; workerNum < numWorkers; workerNum++ )
-        {
-            workerList.add( new WorkerImpl() );
-        }
+//        final int numWorkers = MULTI_COMPUTERS ? FACTOR * Runtime.getRuntime().availableProcessors() : 1;
+//        for ( int workerNum = 0; workerNum < numWorkers; workerNum++ )
+//        {
+//            workerList.add( new WorkerImpl() );
+//        }
     }
+    
+    public List<Worker> makeWorkerList()
+    {
+        final int numAvailableProcessors = MULTI_COMPUTERS ? FACTOR * Runtime.getRuntime().availableProcessors() : 1;
+        final List<Worker> workers = new ArrayList<>( numAvailableProcessors );
+        for ( int workerNum = 0; workerNum < numAvailableProcessors; workerNum++ )
+        {
+            workers.add( new WorkerImpl() );
+        }
+        return workers;
+    }
+    
+    public List<Worker> workList() { return workerList; }
          
     /**
      * Execute a Task.

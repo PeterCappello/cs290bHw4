@@ -23,17 +23,39 @@
  */
 package api;
 
-import java.rmi.Remote;
+import system.Task;
 import system.Return;
-import java.rmi.RemoteException;
 
 /**
  *
  * @author Peter Cappello
+ * @param <T> type of the solution to this recursive problem.
  */
-public interface Computer extends Remote
-{        
-    public Return execute( Task task ) throws RemoteException;
+abstract public class TaskDecompose<T> extends Task
+{    
+    /**
+     * If this task does not decompose, return a ReturnValue object, 
+     * otherwise return a ReturnDecomposition object.
+     * @return Either a ReturnValue object of a ReturnDecomposition object.
+     */
+    @Override
+    public Return call() { return isAtomic() ? solve() : divideAndConquer(); }
     
-    public void exit() throws RemoteException;
+    /**
+     *
+     * @return true if and only if this task does not decompose.
+     */
+    abstract public boolean isAtomic();
+    
+    /**
+     *
+     * @return the ReturnValue object.
+     */
+    abstract public ReturnValue<T> solve();
+    
+    /**
+     *
+     * @return the ReturnDecomposition object.
+     */
+    abstract public ReturnDecomposition divideAndConquer();
 }

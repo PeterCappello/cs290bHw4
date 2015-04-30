@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2015 peter.
+ * Copyright 2015 petercappello.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -15,31 +15,40 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR ONE PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package api;
-
+package applications.fibonacci;
+import api.Job;
+import api.JobRunner;
 import system.Task;
-import system.Return;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 /**
  *
  * @author Peter Cappello
- * @param <T> the type of data in the expression to be reduced.
  */
-abstract public class Reduce<T> extends Task
+public class JobFibonacci implements Job<Integer>
 {
-    private T value;
+    // Configure Job
+    static private final int    N     = 16; // F(16) = 987
+    static private final Task   TASK  = new TaskFibonacci( N );
+    static private final String TITLE = "Fibonacci number";
+         
+    public static void main( final String[] args ) throws Exception
+    {
+        final Job job = new JobFibonacci();
+        final JobRunner jobRunner = new JobRunner( job, TITLE, "" );
+        jobRunner.run( TASK );
+    }
     
     @Override
-    abstract public Return call();
-    
-    void setArg( T arg )
+    public JLabel view( final Integer number ) 
     {
-        
+        return new JLabel( "    The " + N +  "th Fibonacci number is " + number + "    ", SwingConstants.CENTER ) ;
     }
 }

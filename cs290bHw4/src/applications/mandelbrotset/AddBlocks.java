@@ -25,8 +25,8 @@ package applications.mandelbrotset;
 
 import api.ReturnValue;
 import api.TaskCompose;
-import static clients.ClientMandelbrotSet.BLOCK_SIZE;
-import static clients.ClientMandelbrotSet.N_PIXELS;
+import static applications.mandelbrotset.JobMandelbrotSet.BLOCK_SIZE;
+import static applications.mandelbrotset.JobMandelbrotSet.N_PIXELS;
 
 /**
  *

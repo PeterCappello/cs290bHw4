@@ -21,32 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package api;
-import java.io.Serializable;
-import system.Return;
-import java.util.concurrent.Callable;
-import system.Computer2Space;
+package applications.mandelbrotset;
 
 /**
  *
  * @author Peter Cappello
  */
-abstract public class Task implements Serializable, Callable<Return> 
-{ 
-    private int id;
-    private int composeId;
-    private int composeArgNum;
-    protected Computer2Space space;
+final public class ResultValueMandelbrotSet
+{
+    final private Integer[][] counts;
+    final private int blockRow;
+    final private int blockCol;
     
-    @Override
-    abstract public Return call(); 
-        
-    public int  id() { return id; }
-    public void id( int id ) { this.id = id; }
+    public ResultValueMandelbrotSet( final Integer[][] counts, final int blockRow, final int blockCol)
+    {
+        this.counts  = counts;
+        this.blockRow = blockRow;
+        this.blockCol = blockCol;
+    }
     
-    public int  composeArgNum() { return composeArgNum; }
-    public void composeArgNum( int composeArgNum ) { this.composeArgNum = composeArgNum; }
-    
-    public int  composeId() { return composeId; }
-    public void composeId( int composeId ) { this.composeId = composeId; }
+    public Integer[][] counts() { return counts; }
+    public int blockRow() { return blockRow; }
+    public int blockCol() { return blockCol; }
 }
