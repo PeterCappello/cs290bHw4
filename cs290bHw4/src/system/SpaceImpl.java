@@ -239,7 +239,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
                     catch ( RemoteException ignore )
                     {
                         unregister( task, computer, worker );
-                        break;
+                        return;
                     } 
                     catch ( InterruptedException ex ) 
                     { 
