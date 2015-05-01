@@ -54,6 +54,7 @@ public class TaskEuclideanTsp extends TaskDecompose<Tour>
 	{ 6, 6 },
 	{ 3, 6 }
     };
+    static final public double[][] DISTANCES = initializeDistances();
     static final Integer ONE = 1;
     static final Integer TWO = 2;
     static final Integer MAX_UNVISITED_CITIES = 10;
@@ -104,6 +105,12 @@ public class TaskEuclideanTsp extends TaskDecompose<Tour>
         return new ReturnValue<>( this, new Tour( shortestTour, shortestTourDistance ) );
     }
 
+    /**
+     * 
+     * @return container that has a MinTour composition task and a list
+     * of TaskEuclideanTsp subtasks, each with a partial tour that has 1 fewer
+     * unvisited cities than this task.
+     */
     @Override
     public ReturnDecomposition divideAndConquer() 
     {
@@ -153,4 +160,15 @@ public class TaskEuclideanTsp extends TaskDecompose<Tour>
        final double deltaY = city1[ 1 ] - city2[ 1 ];
        return Math.sqrt( deltaX * deltaX + deltaY * deltaY );
    }
+   
+   static private double[][] initializeDistances()
+    {
+        double[][] distances = new double[ CITIES.length][ CITIES.length];
+        for ( int i = 0; i < CITIES.length; i++ )
+        for ( int j = 0; j < i; j++ )
+        {
+            distances[ i ][ j ] = distances[ j ][ i ] = distance( CITIES[ i ], CITIES[ j ] );
+        }
+       return distances;
+    }
 }

@@ -32,6 +32,10 @@ import api.TaskCompose;
  */
 public class MinTour extends TaskCompose<Tour>
 {
+    /**
+     * Find the minimum distance tour of its input tours.
+     * @return the minimum distance tour of its input tours.
+     */
     @Override
     public ReturnValue call() 
     {

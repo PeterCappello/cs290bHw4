@@ -38,12 +38,11 @@ public class JobFibonacci implements Job<Integer>
     static private final int    N     = 16; // F(16) = 987
     static private final Task   TASK  = new TaskFibonacci( N );
     static private final String TITLE = "Fibonacci number";
+    static private final Job JOB = new JobFibonacci();
          
     public static void main( final String[] args ) throws Exception
     {
-        final Job job = new JobFibonacci();
-        final JobRunner jobRunner = new JobRunner( job, TITLE, "" );
-        jobRunner.run( TASK );
+        new JobRunner( JOB, TITLE, args ).run( TASK );
     }
     
     @Override
