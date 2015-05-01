@@ -43,7 +43,7 @@ import java.util.logging.Logger;
  * SpaceImpl implements the space for coordinating sending/receiving Task and Result objects.
  * @author Peter Cappello
  */
-public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Space
+public class SpaceImpl extends UnicastRemoteObject implements Space
 {
     static final public int FINAL_RETURN_VALUE = -1;
     static final private AtomicInteger computerIds = new AtomicInteger();
@@ -56,7 +56,8 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
         
     public SpaceImpl() throws RemoteException 
     {
-        Logger.getLogger(getClass().getName() ).log( Level.INFO, "Space started." );
+        Logger.getLogger(getClass().getName() )
+              .log( Level.INFO, "Space started." );
     }
     
     /**
@@ -104,7 +105,8 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
         try { return resultQ.take(); } 
         catch ( InterruptedException exception ) 
         {
-            Logger.getLogger(SpaceImpl.class.getName()).log(Level.INFO, null, exception);
+            Logger.getLogger( SpaceImpl.class.getName() )
+                    .log( Level.INFO, null, exception );
         }
         assert false; // should never reach this point
         return null;
@@ -130,7 +132,8 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
         final ComputerProxy computerproxy = new ComputerProxy( computer, workerList );
         computerProxies.put( computer, computerproxy );
         computerproxy.startWorkerProxies();
-        Logger.getLogger(SpaceImpl.class.getName()).log(Level.INFO, "Computer {0} started.", computerproxy.computerId);
+        Logger.getLogger( this.getClass().getName() )
+                .log( Level.INFO, "Computer {0} started.", computerproxy.computerId );
     }
     
     public static void main( String[] args ) throws Exception
@@ -140,35 +143,19 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
                       .rebind(Space.SERVICE_NAME, new SpaceImpl() );
     }
 
-    public void processResult( Task parentTask, Return result ) { result.process( parentTask, this ); }
+    public void processResult( final Task parentTask, final Return result ) { result.process( parentTask, this ); }
     
     public int makeTaskId() { return taskIds.incrementAndGet(); }
     
-    public TaskCompose getCompose( int composeId ) { return waitingTaskMap.get( composeId ); }
+    public TaskCompose getCompose( final int composeId ) { return waitingTaskMap.get( composeId ); }
             
-    public void putCompose( final TaskCompose compose )
-    {
-        assert waitingTaskMap.get( compose.id() ) == null; 
-        waitingTaskMap.put( compose.id(), compose );
-        assert waitingTaskMap.get( compose.id() ) != null;
-    }
+    public void putCompose( final TaskCompose compose ) { waitingTaskMap.put( compose.id(), compose ); }
     
-    public void putReadyTask( final Task task ) 
-    { 
-        assert waitingTaskMap.get( task.composeId() ) != null || task.composeId() == FINAL_RETURN_VALUE : task.composeId();
-        try { readyTaskQ.put( task ); } catch ( InterruptedException ignore ){} 
-    }
+    public void putReadyTask( final Task task ) { readyTaskQ.add( task ); }
     
-    public void putResult( final ReturnValue result )
-    {
-        try { resultQ.put( result ); } catch( InterruptedException ignore ){}
-    }
+    public void putResult( final ReturnValue result ) { resultQ.add( result ); }
     
-    public void removeWaitingTask( int composeId )
-    { 
-        assert waitingTaskMap.get( composeId ) != null; 
-        waitingTaskMap.remove( composeId ); 
-    }
+    public void removeWaitingTask( int composeId ) { waitingTaskMap.remove( composeId ); }
     
     private class ComputerProxy implements Computer 
     {
@@ -193,13 +180,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
                 workerProxy.start();
             }
         }
-
-        @Override
-        public Return execute( Task task ) throws RemoteException
-        { 
-            return computer.execute( task );
-        }
-        
+ 
         @Override
         public void exit() 
         { 
@@ -211,11 +192,13 @@ public class SpaceImpl extends UnicastRemoteObject implements Space, Computer2Sp
         {
             readyTaskQ.add( task );
             workerMap.remove( worker );
-            Logger.getLogger( this.getClass().getName() ).log( Level.WARNING, "Computer {0} failed.", computerId );
+            Logger.getLogger( this.getClass().getName() )
+                  .log( Level.WARNING, "Computer {0} failed.", computerId );
             if ( workerMap.isEmpty() )
             {
                 computerProxies.remove( computer );
-                Logger.getLogger( ComputerProxy.class.getCanonicalName() ).log( Level.WARNING, "Computer {0} failed.", computerId );
+                Logger.getLogger( ComputerProxy.class.getCanonicalName() )
+                      .log( Level.WARNING, "Computer {0} failed.", computerId );
             }
         }
 

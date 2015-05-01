@@ -34,17 +34,17 @@ import javax.swing.SwingConstants;
  */
 public class JobFibonacci implements Job<Integer>
 {
-    // Configure Job
-    static private final int    N     = 16; // F(16) = 987
-    static private final Task   TASK  = new TaskFibonacci( N );
-    static private final String TITLE = "Fibonacci number";
-    static private final Job JOB = new JobFibonacci();
-         
     public static void main( final String[] args ) throws Exception
     {
         new JobRunner( JOB, TITLE, args ).run( TASK );
     }
     
+    // Configure Job
+    static private final int    N     = 16; // F(16) = 987
+    static private final Task   TASK  = new TaskFibonacci( N );
+    static private final String TITLE = "Fibonacci number";
+    static private final Job    JOB   = new JobFibonacci();
+         
     @Override
     public JLabel view( final Integer number ) 
     {

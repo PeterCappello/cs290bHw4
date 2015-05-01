@@ -22,10 +22,9 @@
  * THE SOFTWARE.
  */
 package system;
+import api.Space;
 import java.io.Serializable;
-import system.Return;
 import java.util.concurrent.Callable;
-import system.Computer2Space;
 
 /**
  *
@@ -36,7 +35,7 @@ abstract public class Task implements Serializable, Callable<Return>
     private int id;
     private int composeId;
     private int composeArgNum;
-    protected Computer2Space space;
+    protected Space space;
     
     @Override
     abstract public Return call(); 
@@ -49,4 +48,15 @@ abstract public class Task implements Serializable, Callable<Return>
     
     public int  composeId() { return composeId; }
     public void composeId( int composeId ) { this.composeId = composeId; }
+    
+    @Override
+    public String toString()
+    {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append( " id: ").append( id );
+        stringBuilder.append( " composeId: ").append( composeId );
+        stringBuilder.append( " composeArgNum: ").append( composeArgNum );
+        stringBuilder.append( ' ' );
+        return stringBuilder.toString();
+    }
 }

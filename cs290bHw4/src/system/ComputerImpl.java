@@ -40,16 +40,12 @@ public class ComputerImpl extends UnicastRemoteObject implements Computer
 {
     static final private int FACTOR = 2;
            final private List<Worker> workerList = makeWorkerList();
-                 private int numTasks = 0;
            
 
     public ComputerImpl() throws RemoteException
     {
-//        final int numWorkers = MULTI_COMPUTERS ? FACTOR * Runtime.getRuntime().availableProcessors() : 1;
-//        for ( int workerNum = 0; workerNum < numWorkers; workerNum++ )
-//        {
-//            workerList.add( new WorkerImpl() );
-//        }
+        Logger.getLogger( ComputerImpl.class.getName() )
+              .log( Level.INFO, "Computer: started." );
     }
     
     public List<Worker> makeWorkerList()
@@ -64,36 +60,15 @@ public class ComputerImpl extends UnicastRemoteObject implements Computer
     }
     
     public List<Worker> workList() { return workerList; }
-         
-    /**
-     * Execute a Task.
-     * @param task to be executed.
-     * @return the return value of the Task call method.
-     * @throws RemoteException
-     */
-    @Override
-    public Return execute( Task task ) throws RemoteException 
-    { 
-        numTasks++;
-        final long startTime = System.nanoTime();
-        final Return returnValue = task.call();
-        final long runTime = ( System.nanoTime() - startTime ) / 1000000; // milliseconds
-        returnValue.taskRunTime( runTime );
-        return returnValue;
-    }
     
     public static void main( String[] args ) throws Exception
     {
         System.setSecurityManager( new SecurityManager() );
-        /**
-         * Its main method gets the domain name of its Space's machine from the command line. 
-         */
-        final String domainName = "localhost";
+        final String domainName = args.length == 0 ? "localhost" : args[ 0 ];
         final String url = "rmi://" + domainName + ":" + Space.PORT + "/" + Space.SERVICE_NAME;
-        final Computer2Space space = (Computer2Space) Naming.lookup( url );
+        final Space space = (Space) Naming.lookup( url );
         ComputerImpl computer = new ComputerImpl();
         space.register( computer, computer.workerList() );
-        Logger.getLogger( ComputerImpl.class.getCanonicalName() ).log( Level.WARNING, "Computer running." );
     }
 
     /**
@@ -103,7 +78,9 @@ public class ComputerImpl extends UnicastRemoteObject implements Computer
     @Override
     public void exit() throws RemoteException 
     { 
-        System.out.println("Computer # tasks complete:" + numTasks ); /*System.exit( 0 ); */ 
+        Logger.getLogger( this.getClass().getName() )
+              .log( Level.INFO, "Computer: exiting." );
+        /*System.exit( 0 ); */ 
     }
     
     public List<Worker> workerList() { return workerList; }
@@ -115,7 +92,6 @@ public class ComputerImpl extends UnicastRemoteObject implements Computer
         @Override
         public Return execute( Task task ) throws RemoteException 
         {
-            numTasks++;
             final long startTime = System.nanoTime();
             final Return returnValue = task.call();
             final long runTime = ( System.nanoTime() - startTime ) / 1000000; // milliseconds

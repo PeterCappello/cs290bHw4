@@ -50,7 +50,9 @@ public class TaskMandelbrotSet extends TaskDecompose<ResultValueMandelbrotSet>
     final private int blockRow;
     final private int blockCol;
             
-    public TaskMandelbrotSet( double lowerLeftX, double lowerLeftY, double edgeLength, int numPixels, int iterationLimit, int blockRow, int blockCol )
+    public TaskMandelbrotSet( final double lowerLeftX, final double lowerLeftY, 
+            final double edgeLength, final int numPixels, 
+            final int iterationLimit, final int blockRow, final int blockCol )
     {
         this.lowerLeftX = lowerLeftX;
         this.lowerLeftY = lowerLeftY;
@@ -64,21 +66,6 @@ public class TaskMandelbrotSet extends TaskDecompose<ResultValueMandelbrotSet>
     @Override
     public boolean isAtomic() { return MAX_NUM_PIXELS < numPixels; }
 
-//    @Override
-////    public ReturnValue<IterationCounts> solve() 
-//    public ReturnValue<ResultValueMandelbrotSet> solve()
-//    {
-//        final Integer[][] counts = new Integer[numPixels][numPixels];
-//        final double delta = edgeLength / numPixels;
-//        for ( int row = 0; row < numPixels; row++ )
-//            for ( int col = 0; col < numPixels; col++ )
-//            {
-//                counts[row][col] = getIterationCount( row, col, delta );
-//            }
-////        return new ReturnValue<>( this, new IterationCounts( counts, 0, 0 ) );
-//        return new ReturnValue<>( this, new ResultValueMandelbrotSet( counts, blockRow, blockCol ) );
-//    }
-    
     @Override
     public ReturnValue<ResultValueMandelbrotSet> solve() 
     {
