@@ -54,4 +54,7 @@ public class Tour implements Comparable<Tour>
     { 
         return this.cost < tour.cost ? -1 : this.cost > tour.cost ? 1 : 0;
     }
+    
+    @Override
+    public String toString() { return tour.toString() + "\n\tCost: " + cost; }
 }

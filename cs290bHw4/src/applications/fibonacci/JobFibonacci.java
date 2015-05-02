@@ -40,7 +40,7 @@ public class JobFibonacci implements Job<Integer>
     }
     
     // Configure Job
-    static private final int    N     = 16; // F(16) = 987
+    static private final int    N     = 20; // F(16) = 987
     static private final Task   TASK  = new TaskFibonacci( N );
     static private final String TITLE = "Fibonacci number";
     static private final Job    JOB   = new JobFibonacci();
