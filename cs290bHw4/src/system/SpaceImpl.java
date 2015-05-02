@@ -133,14 +133,14 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
         computerProxies.put( computer, computerproxy );
         computerproxy.startWorkerProxies();
         Logger.getLogger( this.getClass().getName() )
-                .log( Level.INFO, "Computer {0} started.", computerproxy.computerId );
+              .log( Level.INFO, "Computer {0} started.", computerproxy.computerId );
     }
     
     public static void main( String[] args ) throws Exception
     {
         System.setSecurityManager( new SecurityManager() );
         LocateRegistry.createRegistry( Space.PORT )
-                      .rebind(Space.SERVICE_NAME, new SpaceImpl() );
+                      .rebind( Space.SERVICE_NAME, new SpaceImpl() );
     }
 
     public void processResult( final Task parentTask, final Return result ) { result.process( parentTask, this ); }
@@ -193,7 +193,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
             readyTaskQ.add( task );
             workerMap.remove( worker );
             Logger.getLogger( this.getClass().getName() )
-                  .log( Level.WARNING, "Computer {0} failed.", computerId );
+                  .log( Level.WARNING, "Computer {0} Worker failed.", computerId );
             if ( workerMap.isEmpty() )
             {
                 computerProxies.remove( computer );

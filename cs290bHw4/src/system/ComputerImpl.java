@@ -38,7 +38,7 @@ import static system.Configuration.MULTI_COMPUTERS;
  */
 public class ComputerImpl extends UnicastRemoteObject implements Computer
 {
-    static final private int FACTOR = 2;
+    static final private int FACTOR = 3;
            final private List<Worker> workerList = makeWorkerList();
            
 
