@@ -42,15 +42,16 @@ import system.Task;
  */
 public class ReturnValueTour extends ReturnValue<Tour>
 {
-    static final private int NUM_PIXALS = 600;
+    static final private int NUM_PIXELS = 600;
     
     ReturnValueTour( final Task task, final Tour tour ) { super( task, tour ); }
     
     @Override
     public JLabel view() 
     {
-        List<Integer> cityList = super.value().tour();
-        Logger.getLogger( this.getClass().getCanonicalName() ).log( Level.INFO, "Tour: {0}", cityList.toString() );
+        List<Integer> cityList = value().tour();
+        Logger.getLogger( this.getClass().getCanonicalName() )
+              .log( Level.INFO, "Tour: {0}", value().toString() );
         Integer[] tour = cityList.toArray( new Integer[0] );
 
         // display the graph graphically, as it were
@@ -78,11 +79,11 @@ public class ReturnValueTour extends ReturnValue<Tour>
             scaledCities[i][1] = ( CITIES[i][1] - minY ) / side;
         }
 
-        final Image image = new BufferedImage( NUM_PIXALS, NUM_PIXALS, BufferedImage.TYPE_INT_ARGB );
+        final Image image = new BufferedImage( NUM_PIXELS, NUM_PIXELS, BufferedImage.TYPE_INT_ARGB );
         final Graphics graphics = image.getGraphics();
 
         final int margin = 10;
-        final int field = NUM_PIXALS - 2*margin;
+        final int field = NUM_PIXELS - 2*margin;
         // draw edges
         graphics.setColor( Color.BLUE );
         int x1, y1, x2, y2;

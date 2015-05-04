@@ -53,7 +53,6 @@ public class TaskEuclideanTsp extends TaskDecompose<Tour>
 	{ 3, 3 },
 	{ 6, 3 },
 	{ 6, 6 },
-//        { 4.5, 4.5 },
 	{ 3, 6 }
     };
     static final public double[][] DISTANCES = initializeDistances();
