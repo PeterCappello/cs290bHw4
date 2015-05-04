@@ -133,7 +133,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
         computerProxies.put( computer, computerproxy );
         computerproxy.startWorkerProxies();
         Logger.getLogger( this.getClass().getName() )
-              .log( Level.INFO, "Computer {0} started.", computerproxy.computerId );
+              .log( Level.INFO, "Registered computer {0}.", computerproxy.computerId );
     }
     
     public static void main( String[] args ) throws Exception

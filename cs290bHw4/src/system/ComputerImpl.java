@@ -38,14 +38,14 @@ import static system.Configuration.MULTI_COMPUTERS;
  */
 public class ComputerImpl extends UnicastRemoteObject implements Computer
 {
-    static final private int FACTOR = 3;
+    static final private int FACTOR = 2;
            final private List<Worker> workerList = makeWorkerList();
            
 
     public ComputerImpl() throws RemoteException
     {
         Logger.getLogger( ComputerImpl.class.getName() )
-              .log( Level.INFO, "Computer: started." );
+              .log(Level.INFO, "Computer: started with {0} workers.", workerList.size());
     }
     
     public List<Worker> makeWorkerList()
