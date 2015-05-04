@@ -173,12 +173,12 @@ public class TaskEuclideanTsp extends TaskDecompose<Tour>
     
     public static double tourDistance( final double[][] cities, final List<Integer> tour )
    {
-       double cost = 0.0;
+       double cost = distance( cities[ tour.get( tour.size() - 1 ) ], cities[ tour.get( 0 ) ] );
        for ( int city = 0; city < tour.size() - 1; city ++ )
        {
            cost += distance( cities[ tour.get( city ) ], cities[ tour.get( city + 1 ) ] );
        }
-       return cost + distance( cities[ tour.get( tour.size() - 1 ) ], cities[ tour.get( 0 ) ] );
+       return cost;
    }
    
    private static double distance( final double[] city1, final double[] city2 )
