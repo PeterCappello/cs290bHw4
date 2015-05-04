@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2015 petercappello.
+ * Copyright 2015 Peter Cappello.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,42 +22,30 @@
  * THE SOFTWARE.
  */
 package applications.mandelbrotset;
-import api.Job;
-import api.JobRunner;
-import system.Task;
+
+import api.ReturnValue;
+import static applications.mandelbrotset.TaskMandelbrotSet.ITERATION_LIMIT;
+import static applications.mandelbrotset.TaskMandelbrotSet.N_PIXELS;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import system.Task;
 
 /**
  *
  * @author Peter Cappello
  */
-public class JobMandelbrotSet implements Job<ResultValueMandelbrotSet>
+public class ReturnValueIterationCounts extends ReturnValue<IterationCounts>
 {
-    public static void main( final String[] args ) throws Exception
-    {
-        new JobRunner( JOB, TITLE, args ).run( TASK );
-    }
-    
-    // Configure Job 
-    static public final double LOWER_LEFT_X = -0.7510975859375;
-    static public final double LOWER_LEFT_Y = 0.1315680625;
-    static public final double EDGE_LENGTH = 0.01611;
-    static public final int N_PIXELS = 1024;
-    static public final int ITERATION_LIMIT = 512;
-    static public final int BLOCK_SIZE = 256;
-    static final private String TITLE = "Mandelbrot Set Visualization";
-    static final private Task TASK = new TaskMandelbrotSet( LOWER_LEFT_X, LOWER_LEFT_Y, EDGE_LENGTH , N_PIXELS, ITERATION_LIMIT, 0, 0 );
-    static final private Job JOB = new JobMandelbrotSet();
+    ReturnValueIterationCounts( final Task task, final IterationCounts counts ) { super( task, counts ); }
     
     @Override
-    public JLabel view( final ResultValueMandelbrotSet returnValue ) 
+    public JLabel view() 
     {
-        final Integer[][] counts = returnValue.counts();
+        final Integer[][] counts = value().counts();
         final Image image = new BufferedImage( N_PIXELS, N_PIXELS, BufferedImage.TYPE_INT_ARGB );
         final Graphics graphics = image.getGraphics();
         for ( int i = 0; i < counts.length; i++ )

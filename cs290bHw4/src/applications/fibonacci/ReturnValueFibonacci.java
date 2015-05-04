@@ -1,7 +1,7 @@
-/**
+/*
  * The MIT License
  *
- * Copyright 2015 peter.
+ * Copyright 2015 Peter Cappello.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,21 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package api;
+package applications.fibonacci;
 
+import api.ReturnValue;
 import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+import system.Task;
 
 /**
- * 
+ *
  * @author Peter Cappello
- * @param <T>
  */
-public interface Job<T> 
-{
-    /**
-     * Display the solution as a JLabel.
-     * @param returnValue the solution.
-     * @return some representation of the solution.
-     */
-    abstract JLabel view( final T returnValue );
+public class ReturnValueFibonacci extends ReturnValue<Integer>
+{    
+    ReturnValueFibonacci( final Task task, Integer value )
+    {
+        super( task, value );
+    }
+    
+    @Override
+    public JLabel view() 
+    {
+        return new JLabel( "    The Fibonacci number is " + value() + "    ", SwingConstants.CENTER ) ;
+    }
 }

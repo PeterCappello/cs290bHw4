@@ -22,15 +22,10 @@
  * THE SOFTWARE.
  */
 package applications.mandelbrotset;
+import api.JobRunner;
 import api.ReturnDecomposition;
-import api.ReturnValue;
 import system.Task;
 import api.TaskDecompose;
-import static applications.mandelbrotset.JobMandelbrotSet.BLOCK_SIZE;
-import static applications.mandelbrotset.JobMandelbrotSet.EDGE_LENGTH;
-import static applications.mandelbrotset.JobMandelbrotSet.ITERATION_LIMIT;
-import static applications.mandelbrotset.JobMandelbrotSet.LOWER_LEFT_X;
-import static applications.mandelbrotset.JobMandelbrotSet.LOWER_LEFT_Y;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -38,9 +33,23 @@ import java.util.List;
  *
  * @author Peter Cappello
  */
-public class TaskMandelbrotSet extends TaskDecompose<ResultValueMandelbrotSet>
+public class TaskMandelbrotSet extends TaskDecompose<IterationCounts>
 {
+    // Configure Job 
+    static public final double LOWER_LEFT_X = -0.7510975859375;
+    static public final double LOWER_LEFT_Y = 0.1315680625;
+    static public final double EDGE_LENGTH = 0.01611;
+    static public final int N_PIXELS = 1024;
+    static public final int ITERATION_LIMIT = 512;
+    static public final int BLOCK_SIZE = 256;
+    static final private String FRAME_TITLE = "Mandelbrot Set Visualization";
+    static final private Task TASK = new TaskMandelbrotSet( LOWER_LEFT_X, LOWER_LEFT_Y, EDGE_LENGTH , N_PIXELS, ITERATION_LIMIT, 0, 0 );
     static final private int MAX_NUM_PIXELS = 256;
+    
+    public static void main( final String[] args ) throws Exception
+    {
+        new JobRunner( FRAME_TITLE, args ).run( TASK );
+    }
     
     final private double lowerLeftX;
     final private double lowerLeftY;
@@ -67,7 +76,7 @@ public class TaskMandelbrotSet extends TaskDecompose<ResultValueMandelbrotSet>
     public boolean isAtomic() { return MAX_NUM_PIXELS < numPixels; }
 
     @Override
-    public ReturnValue<ResultValueMandelbrotSet> solve() 
+    public ReturnValueIterationCounts solve()
     {
         final Integer[][] counts = new Integer[numPixels][numPixels];
         final double delta = edgeLength / numPixels;
@@ -76,7 +85,7 @@ public class TaskMandelbrotSet extends TaskDecompose<ResultValueMandelbrotSet>
             {
                 counts[row][col] = getIterationCount( row, col, delta );
             }
-        return new ReturnValue<>( this, new ResultValueMandelbrotSet( counts, blockRow, blockCol ) );
+        return new ReturnValueIterationCounts( this, new IterationCounts( counts, blockRow, blockCol ) );
     }
 
     @Override

@@ -23,6 +23,7 @@
  */
 package applications.euclideantsp;
 
+import api.JobRunner;
 import api.ReturnDecomposition;
 import api.ReturnValue;
 import system.Task;
@@ -59,6 +60,32 @@ public class TaskEuclideanTsp extends TaskDecompose<Tour>
     static final Integer ONE = 1;
     static final Integer TWO = 2;
     static final Integer MAX_UNVISITED_CITIES = 10;
+    
+    static private List<Integer> initialPartialTour()
+    {
+        List<Integer> partialTour = new ArrayList<>();
+        partialTour.add( 0 );
+        return partialTour;
+    }
+    
+    static private List<Integer> initialUnvisitedCities()
+    {
+        final List<Integer> unvisitedCities = new ArrayList<>();
+        for ( int city = 1; city < CITIES.length; city++ )
+        {
+            unvisitedCities.add( city );
+        }
+        return unvisitedCities;
+    }
+    
+    // Configure Job
+    static final private String FRAME_TITLE = "Euclidean TSP";
+    static final private Task TASK = new TaskEuclideanTsp( initialPartialTour(), initialUnvisitedCities() );
+    
+    public static void main( final String[] args ) throws Exception
+    {
+        new JobRunner( FRAME_TITLE, args ).run( TASK );
+    }
     
     final private List<Integer> partialTour;
     final private List<Integer> unvisitedCities;
@@ -103,7 +130,7 @@ public class TaskEuclideanTsp extends TaskDecompose<Tour>
                 shortestTourDistance = tourDistance;
             }
         }
-        return new ReturnValue<>( this, new Tour( shortestTour, shortestTourDistance ) );
+        return new ReturnValueTour( this, new Tour( shortestTour, shortestTourDistance ) );
     }
 
     /**

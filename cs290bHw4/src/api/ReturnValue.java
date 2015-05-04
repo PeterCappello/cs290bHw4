@@ -22,6 +22,7 @@
  * THE SOFTWARE.
  */
 package api;
+import javax.swing.JLabel;
 import system.Task;
 import system.Return;
 import system.SpaceImpl;
@@ -32,11 +33,11 @@ import system.SpaceImpl;
  * @author Peter Cappello
  * @param <T>
  */
-public class ReturnValue<T> extends Return
+abstract public class ReturnValue<T> extends Return
 {    
     final private int composeId;
     final private int composeArgNum;
-    final private T value;
+    final protected T value;
     
     public ReturnValue( final Task task, final T value ) 
     { 
@@ -65,4 +66,6 @@ public class ReturnValue<T> extends Return
         assert taskCompose != null;
         taskCompose.arg( composeArgNum, value, space );
     }
+    
+    abstract public JLabel view();
 }

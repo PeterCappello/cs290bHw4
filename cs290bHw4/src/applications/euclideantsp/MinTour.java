@@ -47,6 +47,6 @@ public class MinTour extends TaskCompose<Tour>
                 shortestTour = tour;
             }
         }
-        return new ReturnValue<>( this, shortestTour );
+        return new ReturnValueTour( this, shortestTour );
     }
 }

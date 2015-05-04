@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2015 petercappello.
+ * Copyright 2015 peter.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,33 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package applications.fibonacci;
-import api.Job;
-import api.JobRunner;
-import system.Task;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
+package applications.mandelbrotset;
 
 /**
  *
  * @author Peter Cappello
  */
-public class JobFibonacci implements Job<Integer>
+final public class ResultValueIterationCounts
 {
-    public static void main( final String[] args ) throws Exception
+    final private Integer[][] counts;
+    final private int blockRow;
+    final private int blockCol;
+    
+    public ResultValueIterationCounts( final Integer[][] counts, final int blockRow, final int blockCol)
     {
-        new JobRunner( JOB, TITLE, args ).run( TASK );
+        this.counts  = counts;
+        this.blockRow = blockRow;
+        this.blockCol = blockCol;
     }
     
-    // Configure Job
-    static private final int    N     = 20; // F(16) = 987
-    static private final Task   TASK  = new TaskFibonacci( N );
-    static private final String TITLE = "Fibonacci number";
-    static private final Job    JOB   = new JobFibonacci();
-         
-    @Override
-    public JLabel view( final Integer number ) 
-    {
-        return new JLabel( "    The " + N +  "th Fibonacci number is " + number + "    ", SwingConstants.CENTER ) ;
-    }
+    public Integer[][] counts() { return counts; }
+    public int blockRow() { return blockRow; }
+    public int blockCol() { return blockCol; }
 }

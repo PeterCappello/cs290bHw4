@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2015 petercappello.
+ * Copyright 2015 Peter Cappello.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,43 +22,36 @@
  * THE SOFTWARE.
  */
 package applications.euclideantsp;
-import api.Job;
-import api.JobRunner;
-import system.Task;
+
+import api.ReturnValue;
+import static applications.euclideantsp.TaskEuclideanTsp.CITIES;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import system.Task;
 
 /**
  *
  * @author Peter Cappello
  */
-public class JobEuclideanTsp implements Job<Tour>
+public class ReturnValueTour extends ReturnValue<Tour>
 {
-    public static void main( final String[] args ) throws Exception
-    {
-        new JobRunner( JOB, TITLE, args ).run( TASK );
-    }
-    
-    // Configure Job
     static final private int NUM_PIXALS = 600;
-    static final public  double[][] CITIES = TaskEuclideanTsp.CITIES;
-    static final private String TITLE = "Euclidean TSP";
-    static final private Task TASK = new TaskEuclideanTsp( initialPartialTour(), initialUnvisitedCities() );
-    static final Job JOB = new JobEuclideanTsp();
+    
+    ReturnValueTour( final Task task, final Tour tour ) { super( task, tour ); }
     
     @Override
-    public JLabel view( final Tour cityList ) 
+    public JLabel view() 
     {
+        List<Integer> cityList = super.value().tour();
         Logger.getLogger( this.getClass().getCanonicalName() ).log( Level.INFO, "Tour: {0}", cityList.toString() );
-        Integer[] tour = cityList.tour().toArray( new Integer[0] );
+        Integer[] tour = cityList.toArray( new Integer[0] );
 
         // display the graph graphically, as it were
         // get minX, maxX, minY, maxY, assuming 0.0 <= mins
@@ -123,22 +116,5 @@ public class JobEuclideanTsp implements Job<Tour>
         }
         final ImageIcon imageIcon = new ImageIcon( image );
         return new JLabel( imageIcon );
-    }
-    
-    static private List<Integer> initialPartialTour()
-    {
-        List<Integer> partialTour = new ArrayList<>();
-        partialTour.add( 0 );
-        return partialTour;
-    }
-    
-    static private List<Integer> initialUnvisitedCities()
-    {
-        final List<Integer> unvisitedCities = new ArrayList<>();
-        for ( int city = 1; city < CITIES.length; city++ )
-        {
-            unvisitedCities.add( city );
-        }
-        return unvisitedCities;
     }
 }

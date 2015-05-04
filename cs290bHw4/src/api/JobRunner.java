@@ -46,13 +46,11 @@ import system.SpaceImpl;
  */
 public class JobRunner<T> extends JFrame
 {
-    final private Job<T> job;
     final private Space  space;
     final private long   startTime = System.nanoTime();
     
     /**
      *
-     * @param job the Job to be run.
      * @param title the String to be displaced on the JPanel containing the JLabel.
      * @param args command line args - 0th element is Space domain name.
      * @throws RemoteException occurs if there is a communication problem or
@@ -60,13 +58,12 @@ public class JobRunner<T> extends JFrame
      * @throws NotBoundException There is no Space service bound in the RMI registry.
      * @throws MalformedURLException the URL provided for the Space RMI registry is malformed.
      */
-    public JobRunner( final Job job, String title, String[] args ) 
+    public JobRunner( String title, String[] args ) 
            throws RemoteException, NotBoundException, MalformedURLException
     { 
         System.setSecurityManager( new SecurityManager() );
         setTitle( title );
         setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-        this.job = job;
         if ( args.length == 0 )
         {
             space = new SpaceImpl();
@@ -100,7 +97,7 @@ public class JobRunner<T> extends JFrame
     public void run( final Task task ) throws RemoteException
     {
         ReturnValue<T> returnValue = space.compute( task );
-        view( job.view( returnValue.value() ) );
+        view( returnValue.view() );
         Logger.getLogger( this.getClass().getCanonicalName() )
               .log( Level.INFO, "Job run time: {0} ms.", ( System.nanoTime() - startTime ) / 1000000 );
     }
