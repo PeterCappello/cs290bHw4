@@ -193,7 +193,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
             readyTaskQ.add( task );
             workerMap.remove( worker );
             Logger.getLogger( this.getClass().getName() )
-                  .log( Level.WARNING, "Computer {0} Worker failed.", computerId );
+                  .log( Level.WARNING, "Computer {0}: Worker failed.", computerId );
             if ( workerMap.isEmpty() )
             {
                 computerProxies.remove( computer );
