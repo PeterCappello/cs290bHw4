@@ -31,6 +31,7 @@ import api.TaskDecompose;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import util.Permutation;
 import util.PermutationEnumerator;
 
 /**
@@ -88,6 +89,9 @@ public class TaskEuclideanTsp extends TaskDecompose<Tour>
     
     final private List<Integer> partialTour;
     final private List<Integer> unvisitedCities;
+    
+    private List<Integer> shortestTour;
+    double shortestTourDistance;
             
     public TaskEuclideanTsp( List<Integer> partialTour, List<Integer> unvisitedCities )
     {
@@ -108,28 +112,43 @@ public class TaskEuclideanTsp extends TaskDecompose<Tour>
     public ReturnValue solve() 
     {
         // initial value for shortestTour and its distance.
-        List<Integer> shortestTour = new ArrayList<>( partialTour );
+        shortestTour = new ArrayList<>( partialTour );
         shortestTour.addAll( unvisitedCities );
-        double shortestTourDistance = tourDistance( CITIES, shortestTour );
+        shortestTourDistance = tourDistance( CITIES, shortestTour );
+        
+        List<Integer> permutation = new ArrayList<>( unvisitedCities );
+        Permutation.iterate( permutation, 0, p -> consumePermutation( p ) );
 
-        // Use my permutation enumerator
-        PermutationEnumerator<Integer> permutationEnumerator = new PermutationEnumerator<>( unvisitedCities );
-        for ( List<Integer> subtour = permutationEnumerator.next(); subtour != null; subtour = permutationEnumerator.next() ) 
-        {
-            List<Integer> tour = new ArrayList<>( partialTour );
-            tour.addAll( subtour );
-            if ( tour.indexOf( ONE ) >  tour.indexOf( TWO ) )
-            {
-                continue; // skip tour; it is the reverse of another.
-            }
-            double tourDistance = tourDistance( CITIES, tour );
-            if ( tourDistance < shortestTourDistance )
-            {
-                shortestTour = tour;
-                shortestTourDistance = tourDistance;
-            }
-        }
+//        // Use my permutation enumerator
+//        PermutationEnumerator<Integer> permutationEnumerator = new PermutationEnumerator<>( unvisitedCities );
+//        for ( List<Integer> subtour = permutationEnumerator.next(); subtour != null; subtour = permutationEnumerator.next() ) 
+//        {
+//            List<Integer> tour = new ArrayList<>( partialTour );
+//            tour.addAll( subtour );
+//            if ( tour.indexOf( ONE ) >  tour.indexOf( TWO ) )
+//            {
+//                continue; // skip tour; it is the reverse of another.
+//            }
+//            double tourDistance = tourDistance( CITIES, tour );
+//            if ( tourDistance < shortestTourDistance )
+//            {
+//                shortestTour = tour;
+//                shortestTourDistance = tourDistance;
+//            }
+//        }
         return new ReturnValueTour( this, new Tour( shortestTour, shortestTourDistance ) );
+    }
+    
+    private void consumePermutation( final List<Integer> permutation )
+    {
+        List<Integer> tour = new ArrayList<>( partialTour );
+        tour.addAll( permutation );
+        double tourDistance = tourDistance( CITIES, tour );
+        if ( tourDistance < shortestTourDistance )
+        {
+            shortestTour = tour;
+            shortestTourDistance = tourDistance;
+        }
     }
 
     /**

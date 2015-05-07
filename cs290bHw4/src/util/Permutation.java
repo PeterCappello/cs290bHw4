@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2015 peter.
+ * Copyright 2015 cappello.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,17 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package system;
+package util;
 
-import java.rmi.Remote;
-import java.rmi.RemoteException;
+import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  *
- * @author Peter Cappello
+ * @author Pete Cappello
+ * @param <T> the type of objectList being permuted.
  */
-public interface Computer2Space extends Remote //Space
+public class Permutation<T> 
 {
-    void register( Computer computer, List<Worker> workerList ) throws RemoteException;
+    /**
+     * Permute the elements of the List of Integers, starting from element k.
+     * @param permutation the List of Integers to be permuted.
+     * @param k index of element of the sublist to be permuted.
+     * @param consumer a Consumer that takes the List of Integers, permutation, as its parameter.
+     */
+    final static public void iterate( final List<Integer> permutation, final int k, final Consumer<List<Integer>> consumer )
+    {
+        for( int i = k; i < permutation.size(); i++ )
+        {
+            Collections.swap( permutation, i, k );
+            iterate( permutation, k + 1 , consumer );
+            Collections.swap( permutation, k, i );
+        }
+        if ( k == permutation.size() - 1 )
+        {
+            consumer.accept( permutation );
+        }
+    }
 }

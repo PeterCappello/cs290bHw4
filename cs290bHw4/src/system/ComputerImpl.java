@@ -41,7 +41,6 @@ public class ComputerImpl extends UnicastRemoteObject implements Computer
     static final private int FACTOR = 2;
            final private List<Worker> workerList = makeWorkerList();
            
-
     public ComputerImpl() throws RemoteException
     {
         Logger.getLogger( ComputerImpl.class.getName() )
