@@ -72,7 +72,8 @@ public class JobRunner<T> extends JFrame
             for ( int i = 0; i < numComputers; i++ )
             {
                 ComputerImpl computer = new ComputerImpl();
-                space.register( computer, computer.workerList() );
+//                space.register( computer, computer.workerList() );
+                space.register( computer, ComputerImpl.FACTOR * numComputers );
             }
         }
         else

@@ -77,9 +77,11 @@ public interface Space extends Remote
     /**
      *
      * @param computer
+     * @param numWorkerProxies
      * @throws RemoteException
      */
-    void register( final Computer computer, List<Worker> workerList ) throws RemoteException;
+//    void register( final Computer computer, List<Worker> workerList ) throws RemoteException;
+    void register( final Computer computer, int numWorkerProxies ) throws RemoteException;
 
     /**
      *

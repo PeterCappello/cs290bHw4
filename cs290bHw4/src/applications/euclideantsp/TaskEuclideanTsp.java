@@ -59,7 +59,7 @@ public class TaskEuclideanTsp extends TaskDecompose<Tour>
     static final public double[][] DISTANCES = initializeDistances();
     static final Integer ONE = 1;
     static final Integer TWO = 2;
-    static final Integer MAX_UNVISITED_CITIES = 10;
+    static final Integer MAX_UNVISITED_CITIES = 9;
     
     static private List<Integer> initialPartialTour()
     {

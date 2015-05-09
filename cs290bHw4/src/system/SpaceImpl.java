@@ -28,6 +28,7 @@ import api.Space;
 import api.TaskCompose;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Collections;
 import java.util.HashMap;
@@ -126,10 +127,19 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
      * @param workerList
      * @throws RemoteException
      */
-    @Override
-    public void register( Computer computer, List<Worker> workerList ) throws RemoteException
+//    @Override
+//    public void register( Computer computer, List<Worker> workerList ) throws RemoteException
+//    {
+//        final ComputerProxy computerproxy = new ComputerProxy( computer, workerList );
+//        computerProxies.put( computer, computerproxy );
+//        computerproxy.startWorkerProxies();
+//        Logger.getLogger( this.getClass().getName() )
+//              .log( Level.INFO, "Registered computer {0}.", computerproxy.computerId );
+//    }
+    
+    public void register( Computer computer, int numWorkerProxies ) throws RemoteException
     {
-        final ComputerProxy computerproxy = new ComputerProxy( computer, workerList );
+        final ComputerProxy computerproxy = new ComputerProxy( computer, numWorkerProxies );
         computerProxies.put( computer, computerproxy );
         computerproxy.startWorkerProxies();
         Logger.getLogger( this.getClass().getName() )
@@ -139,8 +149,10 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
     public static void main( String[] args ) throws Exception
     {
         System.setSecurityManager( new SecurityManager() );
-        LocateRegistry.createRegistry( Space.PORT )
-                      .rebind( Space.SERVICE_NAME, new SpaceImpl() );
+//        LocateRegistry.createRegistry( Space.PORT )
+//                      .rebind( Space.SERVICE_NAME, new SpaceImpl() );
+        Registry registry = LocateRegistry.createRegistry( Space.PORT );
+        registry.rebind( Space.SERVICE_NAME, new SpaceImpl() );
     }
 
     public void processResult( final Task parentTask, final Return result ) { result.process( parentTask, this ); }
@@ -161,15 +173,26 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
     {
         final private Computer computer;
         final private int computerId = computerIds.getAndIncrement();
-        final private Map<Worker, WorkerProxy> workerMap = new HashMap<>();
+//        final private Map<Worker, WorkerProxy> workerMap = new HashMap<>();
+        final private Map<Integer, WorkerProxy> workerMap = new HashMap<>();
 
-        ComputerProxy( Computer computer, List<Worker> workerList )
+//        ComputerProxy( Computer computer, List<Worker> workerList )
+//        { 
+//            this.computer = computer;
+//            for ( Worker worker : workerList )
+//            {
+//                WorkerProxy workerProxy = new WorkerProxy( worker );
+//                workerMap.put( worker, workerProxy );
+//            }
+//        }
+        
+        ComputerProxy( Computer computer, int numWorkerProxies )
         { 
             this.computer = computer;
-            for ( Worker worker : workerList )
+            for ( int id = 0; id < numWorkerProxies; id++ )
             {
-                WorkerProxy workerProxy = new WorkerProxy( worker );
-                workerMap.put( worker, workerProxy );
+                WorkerProxy workerProxy = new WorkerProxy( id );
+                workerMap.put( id, workerProxy );
             }
         }
         
@@ -188,10 +211,24 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
             catch ( RemoteException ignore ) {} 
         }
         
-        private void unregister( Task task, Computer computer, Worker worker )
+//        private void unregister( Task task, Computer computer, Worker worker )
+//        {
+//            readyTaskQ.add( task );
+//            workerMap.remove( worker );
+//            Logger.getLogger( this.getClass().getName() )
+//                  .log( Level.WARNING, "Computer {0}: Worker failed.", computerId );
+//            if ( workerMap.isEmpty() )
+//            {
+//                computerProxies.remove( computer );
+//                Logger.getLogger( ComputerProxy.class.getCanonicalName() )
+//                      .log( Level.WARNING, "Computer {0} failed.", computerId );
+//            }
+//        }
+        
+        private void unregister( Task task, Computer computer, int workerProxyId )
         {
             readyTaskQ.add( task );
-            workerMap.remove( worker );
+            workerMap.remove( workerProxyId );
             Logger.getLogger( this.getClass().getName() )
                   .log( Level.WARNING, "Computer {0}: Worker failed.", computerId );
             if ( workerMap.isEmpty() )
@@ -202,11 +239,26 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
             }
         }
 
-        private class WorkerProxy extends Thread implements Worker
+        /**
+         * Never invoked.
+         * @param task
+         * @return
+         * @throws RemoteException 
+         */
+        @Override
+        public Return execute( Task task ) throws RemoteException 
         {
-            final private Worker worker;
+            assert false;
+            return null; // unreachable statement
+        }
+
+        private class WorkerProxy extends Thread //implements Worker
+        {
+//            final private Worker worker;
+            final Integer id;
             
-            private WorkerProxy( Worker worker ) { this.worker = worker; }
+//            private WorkerProxy( Worker worker ) { this.worker = worker; }
+            private WorkerProxy( int id ) { this.id = id; }
             
             @Override
             public void run()
@@ -217,11 +269,12 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
                     try 
                     { 
                         task = readyTaskQ.take();
-                        processResult( task, execute( task ) );
+                        processResult( task, computer.execute( task ) );
                     }
                     catch ( RemoteException ignore )
                     {
-                        unregister( task, computer, worker );
+//                        unregister( task, computer, worker );
+                        unregister( task, computer, id );
                         return;
                     } 
                     catch ( InterruptedException ex ) 
@@ -232,11 +285,12 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
                 }
             }
             
-            @Override
-            public Return execute( Task task ) throws RemoteException 
-            {
-                return worker.execute( task );
-            }     
+//            @Override
+//            public Return execute( Task task ) throws RemoteException 
+//            {
+////                return worker.execute( task );
+//                return computer.execute( task );
+//            }     
         }
     }
 }
