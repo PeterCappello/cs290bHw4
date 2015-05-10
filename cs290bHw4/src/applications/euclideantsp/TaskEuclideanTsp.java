@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import util.Permutation;
-import util.PermutationEnumerator;
 
 /**
  * Find a tour of minimum cost among those that start with city 0, 
@@ -111,31 +110,11 @@ public class TaskEuclideanTsp extends TaskDecompose<Tour>
      @Override
     public ReturnValue solve() 
     {
-        // initial value for shortestTour and its distance.
         shortestTour = new ArrayList<>( partialTour );
         shortestTour.addAll( unvisitedCities );
         shortestTourDistance = tourDistance( CITIES, shortestTour );
-        
         List<Integer> permutation = new ArrayList<>( unvisitedCities );
         Permutation.iterate( permutation, 0, p -> consumePermutation( p ) );
-
-//        // Use my permutation enumerator
-//        PermutationEnumerator<Integer> permutationEnumerator = new PermutationEnumerator<>( unvisitedCities );
-//        for ( List<Integer> subtour = permutationEnumerator.next(); subtour != null; subtour = permutationEnumerator.next() ) 
-//        {
-//            List<Integer> tour = new ArrayList<>( partialTour );
-//            tour.addAll( subtour );
-//            if ( tour.indexOf( ONE ) >  tour.indexOf( TWO ) )
-//            {
-//                continue; // skip tour; it is the reverse of another.
-//            }
-//            double tourDistance = tourDistance( CITIES, tour );
-//            if ( tourDistance < shortestTourDistance )
-//            {
-//                shortestTour = tour;
-//                shortestTourDistance = tourDistance;
-//            }
-//        }
         return new ReturnValueTour( this, new Tour( shortestTour, shortestTourDistance ) );
     }
     
