@@ -28,7 +28,6 @@ import api.Space;
 import api.TaskCompose;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Collections;
 import java.util.HashMap;
@@ -63,8 +62,8 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
     
     /**
      * Compute a Task and return its Return.
-     * To ensure that the correct Return is returned, this must be the only
- computation that the Space is serving.
+     * To ensure that the correct Return is returned, the 1 client must
+     * only invoke this method sequentially. 
      * 
      * @param task
      * @return the Task's Return object.
@@ -114,13 +113,6 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
         return null;
     }
 
-    @Override
-    public void exit() throws RemoteException 
-    {
-        computerProxies.values().forEach( proxy -> proxy.exit() );
-        System.exit( 0 );
-    }
-
     /**
      * Register Computer with Space.  
      * Will override existing key-value pair, if any.
@@ -157,7 +149,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
     
     public void removeWaitingTask( int composeId ) { waitingTaskMap.remove( composeId ); }
     
-    private class ComputerProxy implements Computer 
+    private class ComputerProxy 
     {
         final private Computer computer;
         final private int computerId = computerIds.getAndIncrement();
@@ -180,20 +172,13 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
                 workerProxy.start();
             }
         }
- 
-        @Override
-        public void exit() 
-        { 
-            try { computer.exit(); } 
-            catch ( RemoteException ignore ) {} 
-        }
-        
+       
         private void unregister( Task task, Computer computer, int workerProxyId )
         {
             readyTaskQ.add( task );
             workerMap.remove( workerProxyId );
             Logger.getLogger( this.getClass().getName() )
-                  .log( Level.WARNING, "Computer {0}: Worker failed.", computerId );
+                  .log( Level.WARNING, "Computer {0}: Worker failed.", workerProxyId );
             if ( workerMap.isEmpty() )
             {
                 computerProxies.remove( computer );
@@ -202,20 +187,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
             }
         }
 
-        /**
-         * Never invoked.
-         * @param task
-         * @return
-         * @throws RemoteException 
-         */
-        @Override
-        public Return execute( Task task ) throws RemoteException 
-        {
-            assert false : task;
-            return null; // unreachable statement
-        }
-
-        private class WorkerProxy extends Thread //implements Worker
+        private class WorkerProxy extends Thread
         {
             final Integer id;
             
@@ -244,7 +216,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
                               .log( Level.INFO, null, ex ); 
                     }
                 }
-            }    
+            }
         }
     }
 }

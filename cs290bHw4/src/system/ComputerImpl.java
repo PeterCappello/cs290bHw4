@@ -68,16 +68,4 @@ public class ComputerImpl extends UnicastRemoteObject implements Computer
         returnValue.taskRunTime( runTime );
         return returnValue;
     }
-
-    /**
-     * Terminate the JVM.
-     * @throws RemoteException - always!
-     */
-    @Override
-    public void exit() throws RemoteException 
-    { 
-        Logger.getLogger( this.getClass().getName() )
-              .log( Level.INFO, "Computer: exiting." );
-        System.exit( 0 ); 
-    }
 }
