@@ -36,13 +36,12 @@ import java.util.logging.Logger;
 public class ComputerImpl extends UnicastRemoteObject implements Computer
 {
     static final public int FACTOR = 2;
-           
     static final private int numWorkerProxies = FACTOR * Runtime.getRuntime().availableProcessors();
            
     public ComputerImpl() throws RemoteException
     {
         Logger.getLogger( ComputerImpl.class.getName() )
-                .log(Level.INFO, "Computer: started with {0} available processors.", numWorkerProxies );
+              .log(Level.INFO, "Computer: started with {0} available processors.", numWorkerProxies );
     }
 
     public static void main( String[] args ) throws Exception
@@ -79,6 +78,6 @@ public class ComputerImpl extends UnicastRemoteObject implements Computer
     { 
         Logger.getLogger( this.getClass().getName() )
               .log( Level.INFO, "Computer: exiting." );
-        /*System.exit( 0 ); */ 
+        System.exit( 0 ); 
     }
 }
