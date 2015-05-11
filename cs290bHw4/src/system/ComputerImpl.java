@@ -26,11 +26,8 @@ import api.*;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static system.Configuration.MULTI_COMPUTERS;
 
 /**
  * An implementation of the Remote Computer interface.
@@ -39,39 +36,17 @@ import static system.Configuration.MULTI_COMPUTERS;
 public class ComputerImpl extends UnicastRemoteObject implements Computer
 {
     static final public int FACTOR = 2;
-//           final private List<Worker> workerList = makeWorkerList();
            
     static final private int numWorkerProxies = FACTOR * Runtime.getRuntime().availableProcessors();
            
     public ComputerImpl() throws RemoteException
     {
         Logger.getLogger( ComputerImpl.class.getName() )
-//              .log(Level.INFO, "Computer: started with {0} available processors.", workerList.size() );
                 .log(Level.INFO, "Computer: started with {0} available processors.", numWorkerProxies );
     }
-    
-//    public List<Worker> makeWorkerList()
-//    {
-//        final int numAvailableProcessors = MULTI_COMPUTERS ? FACTOR * Runtime.getRuntime().availableProcessors() : 1;
-//        final List<Worker> workers = new ArrayList<>( numAvailableProcessors );
-//        for ( int workerNum = 0; workerNum < numAvailableProcessors; workerNum++ )
-//        {
-//            workers.add( new WorkerImpl() );
-//        }
-//        return workers;
-//    }
-    
-//    public List<Worker> workList() { return workerList; }
-    
+
     public static void main( String[] args ) throws Exception
     {
-//        System.setSecurityManager( new SecurityManager() );
-//        final String domainName = args.length == 0 ? "localhost" : args[ 0 ];
-//        final String url = "rmi://" + domainName + ":" + Space.PORT + "/" + Space.SERVICE_NAME;
-//        final Space space = (Space) Naming.lookup( url );
-//        Computer computer = new ComputerImpl();
-//        space.register( computer, computer.workerList() );
-//        space.register( computer, numWorkerProxies );
         System.setSecurityManager( new SecurityManager() );
         final String domainName = args.length == 0 ? "localhost" : args[ 0 ];
         final String url = "rmi://" + domainName + ":" + Space.PORT + "/" + Space.SERVICE_NAME;
@@ -105,22 +80,5 @@ public class ComputerImpl extends UnicastRemoteObject implements Computer
         Logger.getLogger( this.getClass().getName() )
               .log( Level.INFO, "Computer: exiting." );
         /*System.exit( 0 ); */ 
-    }
-    
-//    public List<Worker> workerList() { return workerList; }
-    
-    private class WorkerImpl implements Worker
-    {
-        WorkerImpl() {}
-
-        @Override
-        public Return execute( Task task ) throws RemoteException 
-        {
-            final long startTime = System.nanoTime();
-            final Return returnValue = task.call();
-            final long runTime = ( System.nanoTime() - startTime ) / 1000000; // milliseconds
-            returnValue.taskRunTime( runTime );
-            return returnValue;
-        }
     }
 }

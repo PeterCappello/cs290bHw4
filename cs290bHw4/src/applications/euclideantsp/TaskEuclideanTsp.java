@@ -56,8 +56,6 @@ public class TaskEuclideanTsp extends TaskDecompose<Tour>
 	{ 3, 6 }
     };
     static final public double[][] DISTANCES = initializeDistances();
-    static final Integer ONE = 1;
-    static final Integer TWO = 2;
     static final Integer MAX_UNVISITED_CITIES = 9;
     
     static private List<Integer> initialPartialTour()
@@ -169,24 +167,24 @@ public class TaskEuclideanTsp extends TaskDecompose<Tour>
         return stringBuilder.toString();
     }
     
-    public static double tourDistance( final double[][] cities, final List<Integer> tour )
-   {
+    static public double tourDistance( final double[][] cities, final List<Integer> tour )
+    {
        double cost = distance( cities[ tour.get( tour.size() - 1 ) ], cities[ tour.get( 0 ) ] );
        for ( int city = 0; city < tour.size() - 1; city ++ )
        {
            cost += distance( cities[ tour.get( city ) ], cities[ tour.get( city + 1 ) ] );
        }
        return cost;
-   }
+    }
    
-   private static double distance( final double[] city1, final double[] city2 )
-   {
+    static private double distance( final double[] city1, final double[] city2 )
+    {
        final double deltaX = city1[ 0 ] - city2[ 0 ];
        final double deltaY = city1[ 1 ] - city2[ 1 ];
        return Math.sqrt( deltaX * deltaX + deltaY * deltaY );
-   }
+    }
    
-   static private double[][] initializeDistances()
+    static private double[][] initializeDistances()
     {
         double[][] distances = new double[ CITIES.length][ CITIES.length];
         for ( int i = 0; i < CITIES.length; i++ )
