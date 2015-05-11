@@ -35,6 +35,7 @@ import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
+import system.Computer;
 import system.ComputerImpl;
 import system.Configuration;
 import system.SpaceImpl;
@@ -71,9 +72,7 @@ public class JobRunner<T> extends JFrame
                              ? Runtime.getRuntime().availableProcessors() : 1;
             for ( int i = 0; i < numComputers; i++ )
             {
-                ComputerImpl computer = new ComputerImpl();
-//                space.register( computer, computer.workerList() );
-                space.register( computer, ComputerImpl.FACTOR * numComputers );
+                space.register( new ComputerImpl(), ComputerImpl.FACTOR * numComputers );
             }
         }
         else

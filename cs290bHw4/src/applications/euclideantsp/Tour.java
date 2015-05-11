@@ -23,13 +23,14 @@
  */
 package applications.euclideantsp;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  *
  * @author Peter Cappello
  */
-public class Tour implements Comparable<Tour>
+public class Tour implements Comparable<Tour>, Serializable
 {
     final private List<Integer> tour;
     final private double cost;

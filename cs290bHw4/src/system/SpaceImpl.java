@@ -212,7 +212,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
         @Override
         public Return execute( Task task ) throws RemoteException 
         {
-            assert false;
+            assert false : task;
             return null; // unreachable statement
         }
 
@@ -236,6 +236,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
                     catch ( RemoteException ignore )
                     {
                         unregister( task, computer, id );
+                        ignore.printStackTrace();
                         return;
                     } 
                     catch ( InterruptedException ex ) 
