@@ -135,7 +135,7 @@
   </target>
   
   <target name="runTsp" depends="mydist" description="run client" >
-  	<java classname="applications.mandelbrot.TaskEuclideanTsp" fork="true">
+  	<java classname="applications.euclideantsp.TaskEuclideanTsp" fork="true">
   	  <jvmarg value="-Djava.security.policy=policy"/>
   	  <arg value="localhost"/>
   	  <classpath>
