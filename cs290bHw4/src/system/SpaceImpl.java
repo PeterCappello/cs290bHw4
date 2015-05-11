@@ -50,8 +50,8 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
     static final private AtomicInteger computerIds = new AtomicInteger();
     
     final private AtomicInteger taskIds = new AtomicInteger();
-    final private BlockingQueue<Task>   readyTaskQ = new LinkedBlockingQueue<>();
-    final private BlockingQueue<ReturnValue> resultQ    = new LinkedBlockingQueue<>();
+    final private BlockingQueue<Task>     readyTaskQ = new LinkedBlockingQueue<>();
+    final private BlockingQueue<ReturnValue> resultQ = new LinkedBlockingQueue<>();
     final private Map<Computer,ComputerProxy> computerProxies = Collections.synchronizedMap( new HashMap<>() );  // !! make concurrent
     final private Map<Integer, TaskCompose>   waitingTaskMap  = Collections.synchronizedMap( new HashMap<>() );
         
@@ -140,8 +140,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
     public static void main( String[] args ) throws Exception
     {
         System.setSecurityManager( new SecurityManager() );
-        Registry registry = LocateRegistry.createRegistry( Space.PORT );
-        registry.rebind( Space.SERVICE_NAME, new SpaceImpl() );
+        LocateRegistry.createRegistry( Space.PORT ).rebind( Space.SERVICE_NAME, new SpaceImpl() );
     }
 
     public void processResult( final Task parentTask, final Return result ) { result.process( parentTask, this ); }
