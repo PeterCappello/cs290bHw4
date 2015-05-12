@@ -72,7 +72,7 @@ public class JobRunner<T> extends JFrame
                              ? Runtime.getRuntime().availableProcessors() : 1;
             for ( int i = 0; i < numComputers; i++ )
             {
-                space.register( new ComputerImpl(), ComputerImpl.FACTOR * numComputers );
+                space.register( new ComputerImpl(), SpaceImpl.PROXIES_PER_PROCESSOR * numComputers );
             }
         }
         else

@@ -34,14 +34,11 @@ import java.util.logging.Logger;
  * @author Peter Cappello
  */
 public class ComputerImpl extends UnicastRemoteObject implements Computer
-{
-    static final public int FACTOR = 2;
-    static final private int numWorkerProxies = FACTOR * Runtime.getRuntime().availableProcessors();
-           
+{           
     public ComputerImpl() throws RemoteException
     {
-        Logger.getLogger( ComputerImpl.class.getName() )
-              .log(Level.INFO, "Computer: started with {0} available processors.", numWorkerProxies );
+        Logger.getLogger( this.getClass().getCanonicalName() )
+              .log(Level.INFO, "Computer: started with {0} available processors.", Runtime.getRuntime().availableProcessors() );
     }
 
     public static void main( String[] args ) throws Exception
@@ -49,8 +46,8 @@ public class ComputerImpl extends UnicastRemoteObject implements Computer
         System.setSecurityManager( new SecurityManager() );
         final String domainName = args.length == 0 ? "localhost" : args[ 0 ];
         final String url = "rmi://" + domainName + ":" + Space.PORT + "/" + Space.SERVICE_NAME;
-        final Space space = (Space) Naming.lookup( url );
-        space.register( new ComputerImpl(), numWorkerProxies );
+        final Space space = ( Space ) Naming.lookup( url );
+        space.register( new ComputerImpl(), Runtime.getRuntime().availableProcessors() );
     }
     
     /**

@@ -45,6 +45,7 @@ import java.util.logging.Logger;
  */
 public class SpaceImpl extends UnicastRemoteObject implements Space
 {
+    static final public int PROXIES_PER_PROCESSOR = 2;
     static final public int FINAL_RETURN_VALUE = -1;
     static final private AtomicInteger computerIds = new AtomicInteger();
     
@@ -117,12 +118,13 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
      * Register Computer with Space.  
      * Will override existing key-value pair, if any.
      * @param computer
+     * @param numProcessors computer's number of available processors.
      * @throws RemoteException
      */
     @Override
-    public void register( Computer computer, int numWorkerProxies ) throws RemoteException
+    public void register( Computer computer, int numProcessors ) throws RemoteException
     {
-        final ComputerProxy computerproxy = new ComputerProxy( computer, numWorkerProxies );
+        final ComputerProxy computerproxy = new ComputerProxy( computer, PROXIES_PER_PROCESSOR* numProcessors );
         computerProxies.put( computer, computerproxy );
         computerproxy.startWorkerProxies();
         Logger.getLogger( this.getClass().getName() )
