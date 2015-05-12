@@ -61,12 +61,6 @@ public interface Space extends Remote
     void execute( final Task task ) throws RemoteException;
     
     /**
-     * 
-     * @throws RemoteException 
-     */
-    public void exit() throws RemoteException;
-    
-    /**
      *
      * @param taskList
      * @throws RemoteException

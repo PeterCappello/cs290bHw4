@@ -75,6 +75,13 @@
   <property name="build" location="build" />
   <property name="dist"  location="dist" />
   
+  <target name="myclean" description="clean up" >
+    <!-- Delete the ${build} and ${dist} directory trees -->
+    <delete dir="${client_file_codebase}/tasks"/>
+    <delete dir="${build}"/>
+    <delete dir="${dist}"/>
+  </target>
+  
   <target name="mycompile" description="compile the source" >
     <!-- Create the build directory structure used by compile -->
     <mkdir dir="${build}"/>  
@@ -142,12 +149,5 @@
   	    <pathelement location="${dist}/dist.jar"/>
   	  </classpath>
   	</java>
-  </target>
-
-  <target name="myclean" description="clean up" >
-    <!-- Delete the ${build} and ${dist} directory trees -->
-    <delete dir="${client_file_codebase}/tasks"/>
-    <delete dir="${build}"/>
-    <delete dir="${dist}"/>
   </target>
 </project>

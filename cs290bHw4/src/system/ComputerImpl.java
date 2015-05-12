@@ -62,24 +62,10 @@ public class ComputerImpl extends UnicastRemoteObject implements Computer
     @Override
     public Return execute( Task task ) throws RemoteException 
     { 
-        System.out.println("START task " + task.id() );
         final long startTime = System.nanoTime();
         final Return returnValue = task.call();
         final long runTime = ( System.nanoTime() - startTime ) / 1000000; // milliseconds
         returnValue.taskRunTime( runTime );
-        System.out.println("FINISHED task " + task.id() );
         return returnValue;
-    }
-
-    /**
-     * Terminate the JVM.
-     * @throws RemoteException - always!
-     */
-    @Override
-    public void exit() throws RemoteException 
-    { 
-        Logger.getLogger( this.getClass().getName() )
-              .log( Level.INFO, "Computer: exiting." );
-        System.exit( 0 ); 
     }
 }

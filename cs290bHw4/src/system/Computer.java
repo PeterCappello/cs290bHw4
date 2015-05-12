@@ -33,6 +33,4 @@ import java.rmi.RemoteException;
 public interface Computer extends Remote
 {            
     public Return execute( Task task ) throws RemoteException;
-    
-    public void exit() throws RemoteException;
 }
