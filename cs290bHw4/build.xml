@@ -71,83 +71,135 @@
 
     -->
     
-  <property name="src"   location="src" />
-  <property name="build" location="build" />
-  <property name="dist"  location="dist" />
+<property name="username" value="${env.USER}"/>
+<property name="pw" value=""/>
+
+<property name="src" location="src"/>
+<property name="build" location="bin"/>
+<property name="dist" location="dist"/>
+<property name="documents" location="documents"/>
+
+<property name="servername" value="cartman.cs.ucsb.edu" />
+<property name="projdir" value="~/cs290B/HW4/" />
+<property name="host1" value="blind.cs.ucsb.edu"/>
+<property name="host2" value="snoopy.cs.ucsb.edu"/>
+<property name="host3" value="dizzy.cs.ucsb.edu"/>
+<property name="host4" value="linus.cs.ucsb.edu"/>
+<property name="host5" value="satchmo.cs.ucsb.edu"/>
+<property name="host6" value="lisa.cs.ucsb.edu"/>
+<property name="host7" value="homer.cs.ucsb.edu"/>
+<property name="host8" value="marge.cs.ucsb.edu"/>
   
+<!-- CLEAN -->
   <target name="myclean" description="clean up" >
-    <!-- Delete the ${build} and ${dist} directory trees -->
-    <delete dir="${client_file_codebase}/tasks"/>
     <delete dir="${build}"/>
     <delete dir="${dist}"/>
   </target>
   
+<!-- COMPILE -->
   <target name="mycompile" description="compile the source" >
-    <!-- Create the build directory structure used by compile -->
     <mkdir dir="${build}"/>  
-  
-    <!-- Compile the java code from ${src} into ${build} -->
-    <javac includeantruntime="false" srcdir="${src}" destdir="${build}"/>
+    
+    <javac includeantruntime="false" srcdir="${src}" destdir="${build}" >
+        <compilerarg value="-Xlint:unchecked"/>
+    </javac>
   </target>
 
+<!-- JAR -->
   <target name="mydist" depends="mycompile" description="generate the distribution" >
-    <!-- Create the distribution directory -->
     <mkdir dir="${dist}"/>
 
-    <!-- Make jar file -->
-    <jar jarfile="${dist}/dist.jar" basedir="${build}" includes="api/** applications/** system/** util/**"/>
-    
+    <jar jarfile="${dist}/project.jar" basedir="${build}" includes="api/** applications/** system/** util/**"/>
   </target>
   
+  <!-- JAVADOC -->
   <target name="myjavadoc" depends="mycompile" description="create javadocs">
   	<javadoc packagenames="tasks.*" sourcepath="${src}" destdir="documents/javadoc" />
   </target>
   
-   <target name="runSpace" depends="mydist" description="run computer" >
+  <!-- RUN SPACE -->
+   <target name="xSpace" depends="mydist" description="run computer" >
   	<java classname="system.SpaceImpl" fork="true">
   	  <jvmarg value="-Djava.security.policy=policy"/>
   	  <classpath>
-  	    <pathelement location="${dist}/dist.jar"/>
+  	    <pathelement location="${dist}/project.jar"/>
   	  </classpath>
   	</java>
   </target> 
   
-  <target name="runComputer" depends="mydist" description="run computer" >
+  <!-- RUN COMPUTER -->
+  <target name="xComputer" depends="mydist" description="run computer" >
   	<java classname="system.ComputerImpl" fork="true">
   	  <jvmarg value="-Djava.security.policy=policy"/>
   	  <classpath>
-  	    <pathelement location="${dist}/dist.jar"/>
+  	    <pathelement location="${dist}/project.jar"/>
   	  </classpath>
   	</java>
   </target> 
   
-   <target name="runFibonacci" depends="mydist" description="run Mandelbrot Set Visualization" >
+  <!-- FIBONACCI CLIENT -->
+   <target name="xFibonacci" depends="mydist" description="run Mandelbrot Set Visualization" >
   	<java classname="applications.fibonacci.TaskFibonacci" fork="true">
   	  <jvmarg value="-Djava.security.policy=policy"/>
   	  <arg value="localhost"/>
   	  <classpath>
-  	    <pathelement location="${dist}/dist.jar"/>
+  	    <pathelement location="${dist}/project.jar"/>
   	  </classpath>
   	</java>
   </target> 
   
-  <target name="runMandelbrotSet" depends="mydist" description="run Mandelbrot Set Visualization" >
+  <!-- MANDELBROT CLIENT -->
+  <target name="xandelbrotSet" depends="mydist" description="run Mandelbrot Set Visualization" >
   	<java classname="applications.mandelbrot.TaskMandelbrotSet" fork="true">
   	  <jvmarg value="-Djava.security.policy=policy"/>
   	  <arg value="localhost"/>
   	  <classpath>
-  	    <pathelement location="${dist}/dist.jar"/>
+  	    <pathelement location="${dist}/project.jar"/>
   	  </classpath>
   	</java>
   </target>
   
-  <target name="runTsp" depends="mydist" description="run client" >
+  <!-- TSP CLIENT -->
+  <target name="xTsp" depends="mydist" description="run client" >
   	<java classname="applications.euclideantsp.TaskEuclideanTsp" fork="true">
   	  <jvmarg value="-Djava.security.policy=policy"/>
   	  <arg value="localhost"/>
   	  <classpath>
-  	    <pathelement location="${dist}/dist.jar"/>
+  	    <pathelement location="${dist}/project.jar"/>
   	  </classpath>
   	</java>
   </target>
+
+<!-- LAUNCH 2 Computers -->
+<target name="x2Computers" depends="dist" description="launch cluster with 2 Compputers" >
+    <parallel> 
+        <sshexec host="${host1}" username="${username}" password="${pw}" trust="true" command="cd ${projdir}; ant xComputer"/>
+        <sshexec host="${host2}" username="${username}" password="${pw}" trust="true" command="cd ${projdir}; ant xComputer"/>
+    </parallel>
+</target>
+
+<!-- LAUNCH 4 Computers -->
+<target name="x4Computers" depends="dist" description="launch cluster with 4 Compputers" >
+    <parallel> 
+        <sshexec host="${host1}" username="${username}" password="${pw}" trust="true" command="cd ${projdir}; ant xComputer"/>
+        <sshexec host="${host2}" username="${username}" password="${pw}" trust="true" command="cd ${projdir}; ant xComputer"/>
+        <sshexec host="${host3}" username="${username}" password="${pw}" trust="true" command="cd ${projdir}; ant xComputer"/>
+        <sshexec host="${host4}" username="${username}" password="${pw}" trust="true" command="cd ${projdir}; ant xComputer"/>
+    </parallel>
+</target>
+
+<!-- LAUNCH 8 Computers -->
+<target name="x8Computers" depends="dist" description="launch cluster with 8 Compputers" >
+    <parallel>
+        <sshexec host="${host1}" username="${username}" password="${pw}" trust="true" command="cd ${projdir}; ant xComputer"/>
+        <sshexec host="${host2}" username="${username}" password="${pw}" trust="true" command="cd ${projdir}; ant xComputer"/>
+        <sshexec host="${host3}" username="${username}" password="${pw}" trust="true" command="cd ${projdir}; ant xComputer"/>
+        <sshexec host="${host4}" username="${username}" password="${pw}" trust="true" command="cd ${projdir}; ant xComputer"/>
+        <sshexec host="${host5}" username="${username}" password="${pw}" trust="true" command="cd ${projdir}; ant xComputer"/>
+        <sshexec host="${host6}" username="${username}" password="${pw}" trust="true" command="cd ${projdir}; ant xComputer"/>
+        <sshexec host="${host7}" username="${username}" password="${pw}" trust="true" command="cd ${projdir}; ant xComputer"/>
+        <sshexec host="${host8}" username="${username}" password="${pw}" trust="true" command="cd ${projdir}; ant xComputer"/>
+    </parallel>
+</target>
+
 </project>
