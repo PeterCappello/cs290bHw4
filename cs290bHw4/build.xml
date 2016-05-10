@@ -80,7 +80,7 @@
 <property name="documents" location="documents"/>
 
 <property name="servername" value="cartman.cs.ucsb.edu" />
-<property name="projdir" value="~/cs290B/HW4/" />
+<property name="projdir" value="~/Downloads/cs290bHw4-master/cs290bHw4/" />
 <property name="host1" value="blind.cs.ucsb.edu"/>
 <property name="host2" value="snoopy.cs.ucsb.edu"/>
 <property name="host3" value="dizzy.cs.ucsb.edu"/>
@@ -118,7 +118,7 @@
   </target>
   
   <!-- RUN SPACE -->
-   <target name="xSpace" depends="mydist" description="run computer" >
+   <target name="xSpace" depends="mydist" description="run space" >
   	<java classname="system.SpaceImpl" fork="true">
   	  <jvmarg value="-Djava.security.policy=policy"/>
   	  <classpath>
@@ -138,7 +138,7 @@
   </target> 
   
   <!-- FIBONACCI CLIENT -->
-   <target name="xFibonacci" depends="mydist" description="run Mandelbrot Set Visualization" >
+   <target name="xFibonacci" depends="mydist" description="run Fibonacci client" >
   	<java classname="applications.fibonacci.TaskFibonacci" fork="true">
   	  <jvmarg value="-Djava.security.policy=policy"/>
   	  <arg value="localhost"/>
@@ -149,7 +149,7 @@
   </target> 
   
   <!-- MANDELBROT CLIENT -->
-  <target name="xandelbrotSet" depends="mydist" description="run Mandelbrot Set Visualization" >
+  <target name="xMandelbrotSet" depends="mydist" description="run Mandelbrot Set Visualization client" >
   	<java classname="applications.mandelbrot.TaskMandelbrotSet" fork="true">
   	  <jvmarg value="-Djava.security.policy=policy"/>
   	  <arg value="localhost"/>
@@ -160,7 +160,7 @@
   </target>
   
   <!-- TSP CLIENT -->
-  <target name="xTsp" depends="mydist" description="run client" >
+  <target name="xTsp" depends="mydist" description="run TSP client" >
   	<java classname="applications.euclideantsp.TaskEuclideanTsp" fork="true">
   	  <jvmarg value="-Djava.security.policy=policy"/>
   	  <arg value="localhost"/>
@@ -171,7 +171,7 @@
   </target>
 
 <!-- LAUNCH 2 Computers -->
-<target name="x2Computers" depends="dist" description="launch cluster with 2 Compputers" >
+<target name="x2Computers" depends="mydist" description="launch cluster with 2 Compputers" >
     <parallel> 
         <sshexec host="${host1}" username="${username}" password="${pw}" trust="true" command="cd ${projdir}; ant xComputer"/>
         <sshexec host="${host2}" username="${username}" password="${pw}" trust="true" command="cd ${projdir}; ant xComputer"/>
@@ -179,7 +179,7 @@
 </target>
 
 <!-- LAUNCH 4 Computers -->
-<target name="x4Computers" depends="dist" description="launch cluster with 4 Compputers" >
+<target name="x4Computers" depends="mydist" description="launch cluster with 4 Compputers" >
     <parallel> 
         <sshexec host="${host1}" username="${username}" password="${pw}" trust="true" command="cd ${projdir}; ant xComputer"/>
         <sshexec host="${host2}" username="${username}" password="${pw}" trust="true" command="cd ${projdir}; ant xComputer"/>
@@ -189,7 +189,7 @@
 </target>
 
 <!-- LAUNCH 8 Computers -->
-<target name="x8Computers" depends="dist" description="launch cluster with 8 Compputers" >
+<target name="x8Computers" depends="mydist" description="launch cluster with 8 Compputers" >
     <parallel>
         <sshexec host="${host1}" username="${username}" password="${pw}" trust="true" command="cd ${projdir}; ant xComputer"/>
         <sshexec host="${host2}" username="${username}" password="${pw}" trust="true" command="cd ${projdir}; ant xComputer"/>
