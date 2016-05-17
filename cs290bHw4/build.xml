@@ -79,9 +79,9 @@
 <property name="dist" location="dist"/>
 <property name="documents" location="documents"/>
 
-<property name="servername" value="cartman.cs.ucsb.edu" />
+<property name="servername" value="dot.cs.ucsb.edu" />
 <property name="projdir" value="~/Downloads/cs290bHw4-master/cs290bHw4" />
-<property name="host1" value="blind.cs.ucsb.edu"/>
+<property name="host1" value="tom"/>
 <property name="host2" value="snoopy.cs.ucsb.edu"/>
 <property name="host3" value="dizzy.cs.ucsb.edu"/>
 <property name="host4" value="linus.cs.ucsb.edu"/>
@@ -131,6 +131,7 @@
   <target name="xComputer" depends="mydist" description="run computer" >
   	<java classname="system.ComputerImpl" fork="true">
   	  <jvmarg value="-Djava.security.policy=policy"/>
+          <arg value="${servername}" />
   	  <classpath>
   	    <pathelement location="${dist}/project.jar"/>
   	  </classpath>
@@ -170,7 +171,7 @@
   	</java>
   </target>
 
-<!-- LAUNCH 2 Computers -->
+<!-- LAUNCH 2 Computers invoke: ant x2Computers -Dpw=yourPassword -->
 <target name="x2Computers" depends="mydist" description="launch cluster with 2 Compputers" >
     <parallel> 
         <sshexec host="${host1}" username="${username}" password="${pw}" trust="true" command="cd ${projdir}; ant xComputer"/>
