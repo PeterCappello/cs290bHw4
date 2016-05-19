@@ -31,6 +31,7 @@ import api.TaskDecompose;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import util.Graph;
 import util.Permutation;
 
 /**
@@ -40,21 +41,21 @@ import util.Permutation;
  */
 public class TaskEuclideanTsp extends TaskDecompose<Tour>
 { 
-    static final public double[][] CITIES =
-    {
-	{ 1, 1 },
-	{ 8, 1 },
-	{ 8, 8 },
-	{ 1, 8 },
-	{ 2, 2 },
-	{ 7, 2 },
-	{ 7, 7 },
-	{ 2, 7 },
-	{ 3, 3 },
-	{ 6, 3 },
-	{ 6, 6 },
-	{ 3, 6 }
-    };
+    static final public double[][] CITIES = Graph.makeGraph( 12, 5 );
+//    {
+//	{ 1, 1 },
+//	{ 8, 1 },
+//	{ 8, 8 },
+//	{ 1, 8 },
+//	{ 2, 2 },
+//	{ 7, 2 },
+//	{ 7, 7 },
+//	{ 2, 7 },
+//	{ 3, 3 },
+//	{ 6, 3 },
+//	{ 6, 6 },
+//	{ 3, 6 }
+//    };
     static final public double[][] DISTANCES = initializeDistances();
     static final Integer MAX_UNVISITED_CITIES = 10;
     
