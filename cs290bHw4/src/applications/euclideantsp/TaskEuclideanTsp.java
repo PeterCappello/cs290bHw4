@@ -41,7 +41,7 @@ import util.Permutation;
  */
 public class TaskEuclideanTsp extends TaskDecompose<Tour>
 { 
-    static final public double[][] CITIES = Graph.makeGraph( 12, 5 );
+    static final public double[][] CITIES = Graph.makeGraph( 12, 8 );
 //    {
 //	{ 1, 1 },
 //	{ 8, 1 },
