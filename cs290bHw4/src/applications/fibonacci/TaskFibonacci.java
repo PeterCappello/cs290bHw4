@@ -70,7 +70,6 @@ public class TaskFibonacci extends TaskDecompose<Integer>
         List<Task> subtasks = new ArrayList<>();
         subtasks.add( new TaskFibonacci( n - 2 ) );
         subtasks.add( new TaskFibonacci( n - 1 ) );
-        
         return new ReturnDecomposition( new SumIntegers(), subtasks ); 
     }
     

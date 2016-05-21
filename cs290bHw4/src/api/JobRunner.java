@@ -35,7 +35,6 @@ import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
-import system.Computer;
 import system.ComputerImpl;
 import system.Configuration;
 import system.SpaceImpl;

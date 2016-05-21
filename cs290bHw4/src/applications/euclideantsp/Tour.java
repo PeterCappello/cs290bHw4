@@ -30,7 +30,7 @@ import java.util.List;
  *
  * @author Peter Cappello
  */
-public class Tour implements Comparable<Tour>, Serializable
+public class Tour implements Serializable
 {
     final private List<Integer> tour;
     final private double cost;
@@ -49,12 +49,6 @@ public class Tour implements Comparable<Tour>, Serializable
     public List<Integer> tour() { return tour; }
     
     public double cost() { return cost; }
-
-    @Override
-    public int compareTo( Tour tour )
-    { 
-        return this.cost < tour.cost ? -1 : this.cost > tour.cost ? 1 : 0;
-    }
     
     @Override
     public String toString() { return tour.toString() + "\n\tCost: " + cost; }

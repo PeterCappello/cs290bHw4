@@ -91,10 +91,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
     @Override
     synchronized public void putAll( final List<Task> taskList )
     {
-        for ( Task task : taskList )
-        {
-            readyTaskQ.add( task );
-        }
+        taskList.forEach( readyTaskQ::add );
     }
 
     /**
@@ -169,10 +166,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
         
         private void startWorkerProxies()
         {
-            for ( WorkerProxy workerProxy : workerMap.values() )
-            {
-                workerProxy.start();
-            }
+            workerMap.values().forEach( WorkerProxy::start );
         }
        
         private void unregister( Task task, Computer computer, int workerProxyId )
