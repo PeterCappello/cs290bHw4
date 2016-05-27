@@ -166,7 +166,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
         
         private void startWorkerProxies()
         {
-            workerMap.values().forEach( WorkerProxy::start );
+            workerMap.values().forEach( Thread::start );
         }
        
         private void unregister( Task task, Computer computer, int workerProxyId )

@@ -68,7 +68,8 @@ public class JobRunner<T> extends JFrame
         {
             space = new SpaceImpl();
             int numComputers = Configuration.MULTI_COMPUTERS 
-                             ? Runtime.getRuntime().availableProcessors() : 1;
+                             ? 1 // will use all my available processors
+                             : Runtime.getRuntime().availableProcessors();
             for ( int i = 0; i < numComputers; i++ )
             {
                 space.register( new ComputerImpl(), SpaceImpl.PROXIES_PER_PROCESSOR * numComputers );
