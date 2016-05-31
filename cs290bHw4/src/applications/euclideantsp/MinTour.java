@@ -25,7 +25,6 @@ package applications.euclideantsp;
 
 import api.ReturnValue;
 import api.TaskCompose;
-import java.util.Arrays;
 import java.util.Comparator;
 
 /**
@@ -55,6 +54,6 @@ public class MinTour extends TaskCompose<Tour> //implements Comparator<Tour>
 //    @Override
 //    public int compare( Tour thisTour, Tour thatTour ) 
 //    {
-//        return thisTour.cost() < thatTour.cost() ? -1 : thisTour.cost() > thatTour.cost() ? 1 : 0;    
+//        return thisTour.cost() < thatTour.cost() ? -1 : thisTour.cost() > thatTour.cost() ? 1 : 0;
 //    }
 }
