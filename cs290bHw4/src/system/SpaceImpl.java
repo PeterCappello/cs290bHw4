@@ -47,13 +47,14 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
 {
     static final public int PROXIES_PER_PROCESSOR = 2;
     static final public int FINAL_RETURN_VALUE = -1;
-    static final private AtomicInteger computerIds = new AtomicInteger();
     
-    final private AtomicInteger taskIds = new AtomicInteger();
-    final private BlockingQueue<Task>     readyTaskQ = new LinkedBlockingQueue<>();
-    final private BlockingQueue<ReturnValue> resultQ = new LinkedBlockingQueue<>();
-    final private Map<Computer,ComputerProxy> computerProxies = Collections.synchronizedMap( new HashMap<>() );  // !! make concurrent
-    final private Map<Integer, TaskCompose>   waitingTaskMap  = Collections.synchronizedMap( new HashMap<>() );
+    // Reflecting that SpaceImpl is a singleton, its fields are declared static.
+    static final private AtomicInteger computerIds = new AtomicInteger();
+    static final private AtomicInteger taskIds = new AtomicInteger();
+    static final private BlockingQueue<Task>     readyTaskQ = new LinkedBlockingQueue<>();
+    static final private BlockingQueue<ReturnValue> resultQ = new LinkedBlockingQueue<>();
+    static final private Map<Computer,ComputerProxy> computerProxies = Collections.synchronizedMap( new HashMap<>() );  // !! make concurrent
+    static final private Map<Integer, TaskCompose>   waitingTaskMap  = Collections.synchronizedMap( new HashMap<>() );
         
     public SpaceImpl() throws RemoteException 
     {

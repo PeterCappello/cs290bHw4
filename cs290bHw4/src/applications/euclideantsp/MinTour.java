@@ -25,13 +25,14 @@ package applications.euclideantsp;
 
 import api.ReturnValue;
 import api.TaskCompose;
+import java.util.Arrays;
 import java.util.Comparator;
 
 /**
  *
  * @author Peter Cappello
  */
-public class MinTour extends TaskCompose<Tour> implements Comparator<Tour>
+public class MinTour extends TaskCompose<Tour> //implements Comparator<Tour>
 {
     /**
      * Find the minimum distance tour of its input tours.
@@ -40,7 +41,8 @@ public class MinTour extends TaskCompose<Tour> implements Comparator<Tour>
     @Override
     public ReturnValue call() 
     {
-        return new ReturnValueTour( this, args().stream().min( this ).get() );
+//        return new ReturnValueTour( this, args().stream().min( this ).get() );
+        return new ReturnValueTour( this, args().stream().min( Comparator.comparingDouble( Tour::cost ) ).get() );
     }
     /**
      * Compare the cost of thisTour to thatTour.
@@ -50,9 +52,9 @@ public class MinTour extends TaskCompose<Tour> implements Comparator<Tour>
      *          1: thatTour is shorter than thisTour
      *          0: otherwise
      */
-    @Override
-    public int compare( Tour thisTour, Tour thatTour ) 
-    {
-        return thisTour.cost() < thatTour.cost() ? -1 : thisTour.cost() > thatTour.cost() ? 1 : 0;    
-    }
+//    @Override
+//    public int compare( Tour thisTour, Tour thatTour ) 
+//    {
+//        return thisTour.cost() < thatTour.cost() ? -1 : thisTour.cost() > thatTour.cost() ? 1 : 0;    
+//    }
 }
