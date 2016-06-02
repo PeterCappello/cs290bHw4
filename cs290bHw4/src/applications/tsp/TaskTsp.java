@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package applications.euclideantsp;
+package applications.tsp;
 
 import api.JobRunner;
 import api.ReturnDecomposition;
@@ -29,8 +29,11 @@ import api.ReturnValue;
 import system.Task;
 import api.TaskDecompose;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import util.Graph;
 import util.Permutation;
 
@@ -39,46 +42,39 @@ import util.Permutation;
  * followed by city secondCity.
  * @author Peter Cappello
  */
-public class TaskEuclideanTsp extends TaskDecompose<Tour>
+public class TaskTsp extends TaskDecompose<Tour>
 { 
-    static final public double[][] CITIES = Graph.makeGraph( 12, 8 );
-//    {
-//	{ 1, 1 },
-//	{ 8, 1 },
-//	{ 8, 8 },
-//	{ 1, 8 },
-//	{ 2, 2 },
-//	{ 7, 2 },
-//	{ 7, 7 },
-//	{ 2, 7 },
-//	{ 3, 3 },
-//	{ 6, 3 },
-//	{ 6, 6 },
-//	{ 3, 6 }
-//    };
+    static final public double[][] CITIES = //Graph.makeGraph( 12, 8 );
+    {
+	{ 1, 1 },
+	{ 8, 1 },
+	{ 8, 8 },
+	{ 1, 8 },
+	{ 2, 2 },
+	{ 7, 2 },
+	{ 7, 7 },
+	{ 2, 7 },
+	{ 3, 3 },
+	{ 6, 3 },
+	{ 6, 6 },
+	{ 3, 6 }
+    };
     static final public double[][] DISTANCES = initializeDistances();
     static final Integer MAX_UNVISITED_CITIES = 10;
     
     static private List<Integer> initialPartialTour()
     {
-        List<Integer> partialTour = new ArrayList<>();
-        partialTour.add( 0 );
-        return partialTour;
+        return Arrays.asList( 0 );
     }
     
     static private List<Integer> initialUnvisitedCities()
     {
-        final List<Integer> unvisitedCities = new ArrayList<>();
-        for ( int city = 1; city < CITIES.length; city++ )
-        {
-            unvisitedCities.add( city );
-        }
-        return unvisitedCities;
+        return IntStream.range( 1, CITIES.length ).boxed().collect( Collectors.toList() );
     }
     
     // Configure Job
     static final private String FRAME_TITLE = "Euclidean TSP";
-    static final private Task TASK = new TaskEuclideanTsp( initialPartialTour(), initialUnvisitedCities() );
+    static final private Task TASK = new TaskTsp( initialPartialTour(), initialUnvisitedCities() );
     
     public static void main( final String[] args ) throws Exception
     {
@@ -91,7 +87,7 @@ public class TaskEuclideanTsp extends TaskDecompose<Tour>
     private List<Integer> shortestTour;
     double shortestTourDistance;
             
-    public TaskEuclideanTsp( List<Integer> partialTour, List<Integer> unvisitedCities )
+    public TaskTsp( List<Integer> partialTour, List<Integer> unvisitedCities )
     {
         this.partialTour = partialTour;
         this.unvisitedCities = unvisitedCities;
@@ -132,39 +128,50 @@ public class TaskEuclideanTsp extends TaskDecompose<Tour>
     /**
      * 
      * @return container that has a MinTour composition task and a list
-     * of TaskEuclideanTsp subtasks, each with a partial tour that has 1 fewer
-     * unvisited cities than this task.
+ of TaskTsp subtasks, each with a partial tour that has 1 fewer
+ unvisited cities than this task.
      */
     @Override
     public ReturnDecomposition divideAndConquer() 
     {
         final List<Task> subtasks = new  LinkedList<>();
-        for ( Integer unvisitedCity : unvisitedCities )
+        unvisitedCities.forEach( unvisitedCity -> 
         {
             List<Integer> subtaskPartialTour = new ArrayList<>( partialTour );
             List<Integer> subtaskUnvisitedCities = new ArrayList<>( unvisitedCities );
             subtaskUnvisitedCities.remove( unvisitedCity );
             subtaskPartialTour.add( unvisitedCity ); // extend tour with this city.
-            subtasks.add( new TaskEuclideanTsp( subtaskPartialTour, subtaskUnvisitedCities ) );
-        }
+            subtasks.add(new TaskTsp( subtaskPartialTour, subtaskUnvisitedCities ) );
+        });
         return new ReturnDecomposition( new MinTour(), subtasks );
     }
     
     @Override
     public String toString()
     {
+//        StringBuilder stringBuilder = new StringBuilder();
+//        stringBuilder.append( getClass() );
+//        stringBuilder.append( "\n\tPartial tour: " );
+//        partialTour.stream().forEach(( city ) -> 
+//        {
+//            stringBuilder.append( city ).append( " " );
+//        } );
+//        stringBuilder.append( "\n\tUnvisited cities: " );
+//        unvisitedCities.stream().forEach(( city ) -> 
+//        {
+//            stringBuilder.append( city ).append( " " );
+//        } );
+//        return stringBuilder.toString();
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append( getClass() );
-        stringBuilder.append( "\n\tPartial tour: " );
-        partialTour.stream().forEach(( city ) -> 
+        stringBuilder.append( " Partial tour: \n" );
+        partialTour.stream().forEach( city -> 
         {
-            stringBuilder.append( city ).append( " " );
+            stringBuilder.append( city ).append( ": " );
+            stringBuilder.append( CITIES[ city ][ 0 ] ).append( " " ).append( CITIES[ city ][ 1 ] ).append( '\n' );
         } );
         stringBuilder.append( "\n\tUnvisited cities: " );
-        unvisitedCities.stream().forEach(( city ) -> 
-        {
-            stringBuilder.append( city ).append( " " );
-        } );
+        unvisitedCities.forEach( city -> stringBuilder.append( city ).append( ' ' ) );
         return stringBuilder.toString();
     }
     

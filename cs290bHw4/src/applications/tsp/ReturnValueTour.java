@@ -21,10 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package applications.euclideantsp;
+package applications.tsp;
 
 import api.ReturnValue;
-import static applications.euclideantsp.TaskEuclideanTsp.CITIES;
+import static applications.tsp.TaskTsp.CITIES;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;

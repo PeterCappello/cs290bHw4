@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2016 Peter Cappello.
+ * Copyright 2015 peter.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,29 +21,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package applications.euclideantsp;
+package applications.tsp;
 
-import api.ReturnValue;
-import api.TaskCompose;
-import java.util.Comparator;
+import java.io.Serializable;
+import java.util.List;
 
 /**
  *
  * @author Peter Cappello
  */
-public class MinTour extends TaskCompose<Tour> 
+public class Tour implements Serializable
 {
+    final private List<Integer> tour;
+    final private double cost;
+    
     /**
-     * Find the minimum distance tour of its input tours.
-     * @return the minimum distance tour of its input tours.
+     * Return container for TaskEuclideanTsp.
+     * @param tour
+     * @param cost
      */
-    @Override
-    public ReturnValue call() 
+    public Tour( List<Integer> tour, double cost ) 
     {
-        return new ReturnValueTour( this, 
-                args().stream()
-                      .min( Comparator.comparingDouble( Tour::cost ) )
-                      .get() 
-        );
-    }
+        this.tour = tour;
+        this.cost = cost;
+    } 
+ 
+    public List<Integer> tour() { return tour; }
+    
+    public double cost() { return cost; }
+    
+    @Override
+    public String toString() { return tour.toString() + "\n\tCost: " + cost; }
 }

@@ -33,8 +33,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -52,7 +54,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
     // Mutable class attributes: Since SpaceImpl is a singleton, its mutable fields are declared static.
     static final private AtomicInteger computerIds = new AtomicInteger();
     static final private AtomicInteger taskIds = new AtomicInteger();
-    static final private BlockingQueue<Task>     readyTaskQ = new LinkedBlockingQueue<>();
+    static final private BlockingDeque<Task>     readyTasks = new LinkedBlockingDeque<>();
     static final private BlockingQueue<ReturnValue> resultQ = new LinkedBlockingQueue<>();
     static final private Map<Computer,ComputerProxy> computerProxies = Collections.synchronizedMap( new HashMap<>() );  // !! make concurrent
     static final private Map<Integer, TaskCompose>   waitingTaskMap  = Collections.synchronizedMap( new HashMap<>() );
@@ -62,6 +64,8 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
         Logger.getLogger(getClass().getName() )
               .log( Level.INFO, "Space started." );
     }
+    
+    public void addReadyTask( Task task ) { readyTasks.addFirst( task ); }
     
     /**
      * Compute a Task and return its Return.
@@ -87,13 +91,13 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
     { 
         task.id( makeTaskId() );
         task.composeId( FINAL_RETURN_VALUE );
-        readyTaskQ.add( task );
+        addReadyTask( task );
     }
     
     @Override
     synchronized public void putAll( final List<Task> taskList )
     {
-        taskList.forEach( readyTaskQ::add );
+        taskList.stream().forEach( this::addReadyTask );
     }
 
     /**
@@ -144,7 +148,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
             
     public void putCompose( final TaskCompose compose ) { waitingTaskMap.put( compose.id(), compose ); }
     
-    public void putReadyTask( final Task task ) { readyTaskQ.add( task ); }
+    public void putReadyTask( final Task task ) { addReadyTask( task ); }
     
     public void putResult( final ReturnValue result ) { resultQ.add( result ); }
     
@@ -173,7 +177,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
        
         private void unregister( Task task, Computer computer, int workerProxyId )
         {
-            readyTaskQ.add( task );
+            addReadyTask( task );
             workerMap.remove( workerProxyId );
             Logger.getLogger( this.getClass().getName() )
                   .log( Level.WARNING, "Computer {0}: Worker failed.", workerProxyId );
@@ -199,7 +203,7 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
                     Task task = null;
                     try 
                     { 
-                        task = readyTaskQ.take();
+                        task = readyTasks.takeFirst();
                         processResult( task, computer.execute( task ) );
                     }
                     catch ( RemoteException exception )
