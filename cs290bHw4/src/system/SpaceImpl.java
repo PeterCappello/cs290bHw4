@@ -45,11 +45,11 @@ import java.util.logging.Logger;
  */
 public class SpaceImpl extends UnicastRemoteObject implements Space
 {
-    // Immutables
+    // Immutable class attributes
     static final public int PROXIES_PER_PROCESSOR = 2;
     static final public int FINAL_RETURN_VALUE = -1;
     
-    // Mutables: Since SpaceImpl is a singleton, its mutable fields are declared static.
+    // Mutable class attributes: Since SpaceImpl is a singleton, its mutable fields are declared static.
     static final private AtomicInteger computerIds = new AtomicInteger();
     static final private AtomicInteger taskIds = new AtomicInteger();
     static final private BlockingQueue<Task>     readyTaskQ = new LinkedBlockingQueue<>();
@@ -202,10 +202,9 @@ public class SpaceImpl extends UnicastRemoteObject implements Space
                         task = readyTaskQ.take();
                         processResult( task, computer.execute( task ) );
                     }
-                    catch ( RemoteException ignore )
+                    catch ( RemoteException exception )
                     {
                         unregister( task, computer, id );
-                        ignore.printStackTrace();
                         return;
                     } 
                     catch ( InterruptedException ex ) 
