@@ -149,19 +149,6 @@ public class TaskTsp extends TaskDecompose<Tour>
     @Override
     public String toString()
     {
-//        StringBuilder stringBuilder = new StringBuilder();
-//        stringBuilder.append( getClass() );
-//        stringBuilder.append( "\n\tPartial tour: " );
-//        partialTour.stream().forEach(( city ) -> 
-//        {
-//            stringBuilder.append( city ).append( " " );
-//        } );
-//        stringBuilder.append( "\n\tUnvisited cities: " );
-//        unvisitedCities.stream().forEach(( city ) -> 
-//        {
-//            stringBuilder.append( city ).append( " " );
-//        } );
-//        return stringBuilder.toString();
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append( getClass() );
         stringBuilder.append( " Partial tour: \n" );
